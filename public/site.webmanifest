@@ -1,0 +1,23 @@
+{
+  "name": "Chem Rank",
+  "short_name": "Chem Rank",
+  "description": "ระบบสะสมหยดสารและ Rank สำหรับห้องเรียนเคมี",
+  "lang": "th",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fffaf0",
+  "theme_color": "#69d7c6",
+  "icons": [
+    {
+      "src": "/assets/brand/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/brand/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
