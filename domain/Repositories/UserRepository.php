@@ -15,5 +15,6 @@ interface UserRepository
     public function usernameExists(string $username): bool;
 
     public function create(string $name, string $role, string $username, string $passwordHash): User;
-}
 
+    public function updatePasswordHash(int $userId, string $passwordHash): void;
+}

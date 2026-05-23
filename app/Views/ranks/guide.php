@@ -7,12 +7,12 @@ $lastRank = $ranks[array_key_last($ranks)] ?? null;
 <section class="rank-guide-page page-band">
     <div class="rank-guide-hero">
         <div class="rank-guide-copy">
-            <h1>แผนที่วิวัฒนาการ Rank</h1>
-            <p>ดูเส้นทางของหยดสารตั้งแต่เริ่มต้นไปจนถึงระดับสูงสุด แบบอ่านง่าย สดใส และติดตามต่อได้ทุกครั้งที่คะแนนขยับ</p>
+            <h1>แผนที่ Rank ของหยดสาร</h1>
+            <p>ดูแต่ละระดับของหยดสาร ตั้งแต่เริ่มสะสมไปจนถึงขั้นสูงสุด พร้อมช่วงหยดที่ต้องใช้ในแต่ละระดับ</p>
             <div class="rank-guide-facts" aria-label="ภาพรวม rank">
                 <span><strong><?= e((string) $totalRanks) ?></strong> ระดับ</span>
-                <span><strong><?= e($firstRank?->rangeLabel() ?? '0') ?></strong> หยดแรก</span>
-                <span><strong><?= e($lastRank?->rangeLabel() ?? '136+') ?></strong> ยังสะสมต่อได้</span>
+                <span><strong><?= e($firstRank?->rangeLabel() ?? '0') ?></strong> เริ่มต้น</span>
+                <span><strong><?= e($lastRank?->rangeLabel() ?? '136+') ?></strong> สะสมต่อได้</span>
             </div>
         </div>
 

@@ -24,8 +24,8 @@ $brandUrl = $currentRole === 'student'
 $navItems = match ($currentRole) {
     'student' => [
         ['/student', 'ห้องทดลอง'],
-        ['/ranks', 'แผนที่ Rank'],
         ['/leaderboard', 'อันดับหยดสาร'],
+        ['/student/profile', 'โปรไฟล์'],
     ],
     'teacher' => [
         ['/teacher', 'ห้องครู'],
@@ -113,10 +113,10 @@ $navItems = match ($currentRole) {
         <?php if ($flashMessages): ?>
             <?php
             $flashTitles = [
-                'success' => 'ทำรายการเรียบร้อย',
-                'error' => 'ตรวจสอบข้อมูลอีกครั้ง',
-                'warning' => 'ตรวจสอบข้อมูลอีกครั้ง',
-                'info' => 'แจ้งเตือน',
+                'success' => 'เรียบร้อยแล้ว',
+                'error' => 'ลองตรวจดูอีกครั้ง',
+                'warning' => 'ตรวจสอบอีกครั้ง',
+                'info' => 'แจ้งให้ทราบ',
             ];
             ?>
             <section class="flash-stack" aria-live="polite" aria-label="ข้อความแจ้งเตือน">

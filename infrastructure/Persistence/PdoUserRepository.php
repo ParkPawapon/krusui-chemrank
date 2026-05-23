@@ -57,6 +57,21 @@ final class PdoUserRepository implements UserRepository
             ?? throw new \RuntimeException('Unable to create user.');
     }
 
+    public function updatePasswordHash(int $userId, string $passwordHash): void
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE users SET password_hash = :password_hash, updated_at = CURRENT_TIMESTAMP WHERE id = :id'
+        );
+        $statement->execute([
+            'id' => $userId,
+            'password_hash' => $passwordHash,
+        ]);
+
+        if ($statement->rowCount() < 1) {
+            throw new \RuntimeException('Unable to update password.');
+        }
+    }
+
     /**
      * @param array<string,mixed> $row
      */
@@ -73,4 +88,3 @@ final class PdoUserRepository implements UserRepository
         );
     }
 }
-

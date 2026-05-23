@@ -7,7 +7,7 @@ $roleLabel = $isTeacher ? 'Teacher Lab' : 'Student Lab';
 $heading = $isTeacher ? 'ครูเข้าสู่ระบบ' : 'นักเรียนเข้าสู่ระบบ';
 $lead = $isTeacher
     ? 'จัดการหยดสารของนักเรียนอย่างรวดเร็ว พร้อมบันทึกการปรับคะแนนทุกครั้ง'
-    : 'กลับเข้าสู่ห้องทดลอง ดูหยดสาร และติดตาม rank ถัดไปของตัวเอง';
+    : '';
 $rankName = $loginRank->englishSlug;
 $rankCaption = $isTeacher ? 'ดูแลห้องทดลอง' : 'เริ่มเก็บหยดสาร';
 $identifierLabel = $isTeacher ? 'ชื่อผู้ใช้' : 'เลขประจำตัวนักเรียน';
@@ -47,7 +47,9 @@ $identifierPlaceholder = $isTeacher ? 'ชื่อผู้ใช้' : 'เช
                 </div>
             </div>
 
-            <p class="auth-lead"><?= e($lead) ?></p>
+            <?php if ($lead !== ''): ?>
+                <p class="auth-lead"><?= e($lead) ?></p>
+            <?php endif; ?>
 
             <form action="<?= e(url('/login')) ?>" method="post" class="form-stack auth-form">
                 <?= $csrf->field() ?>
