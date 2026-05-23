@@ -1,0 +1,16 @@
+{
+  "name": "krusui/chem-rank",
+  "description": "Chem Rank / เส้นทางสู่นักเคมี",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=8.0",
+    "ext-pdo": "*",
+    "ext-mbstring": "*",
+    "ext-zip": "*"
+  },
+  "scripts": {
+    "test": "php tests/run.php",
+    "migrate": "php bin/migrate.php"
+  }
+}
