@@ -11,7 +11,7 @@ COPY public/assets/js ./public/assets/js
 COPY public/assets/ranks ./public/assets/ranks
 RUN npm run build
 
-FROM php:8.3-fpm-alpine AS php-runtime
+FROM php:8.5-fpm-alpine AS php-runtime
 
 WORKDIR /var/www/html
 
