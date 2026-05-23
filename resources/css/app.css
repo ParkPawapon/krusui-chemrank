@@ -427,19 +427,125 @@
   }
 
   .flash-stack {
-    @apply fixed right-4 top-20 z-40 flex w-[min(360px,calc(100vw-2rem))] flex-col gap-2;
+    @apply fixed right-4 top-24 z-40 flex w-[min(420px,calc(100vw-2rem))] flex-col gap-3;
   }
 
   .flash-message {
-    @apply rounded-2xl border bg-white px-4 py-3 text-sm font-bold shadow-soft;
+    @apply relative grid grid-cols-[44px_minmax(0,1fr)_32px] items-start gap-3 overflow-hidden rounded-[24px] border border-white/90 bg-white/[0.92] p-3 text-left shadow-soft backdrop-blur;
+    box-shadow: var(--shadow-pop);
+    animation: flash-panel-in 420ms cubic-bezier(0.2, 0.85, 0.24, 1.08) both;
+  }
+
+  .flash-message::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 18% 18%, rgb(255 255 255 / 0.78), transparent 28%),
+      linear-gradient(135deg, var(--flash-soft), rgb(255 255 255 / 0.82));
+  }
+
+  .flash-message::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgb(255 255 255 / 0.72);
+    border-radius: 18px;
+  }
+
+  .flash-message > * {
+    @apply relative z-10;
+  }
+
+  .flash-icon {
+    @apply grid h-11 w-11 place-items-center rounded-2xl border-2 border-white bg-white/85 shadow-sm;
+    color: var(--flash-main);
+  }
+
+  .flash-icon::before {
+    content: "";
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: currentColor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+  }
+
+  .flash-copy {
+    @apply min-w-0 pt-0.5;
+  }
+
+  .flash-copy strong {
+    @apply block text-sm font-black leading-5 text-ink;
+  }
+
+  .flash-copy p {
+    @apply mt-1 text-sm font-bold leading-6 text-ink/65;
+    overflow-wrap: anywhere;
+  }
+
+  .flash-close {
+    @apply grid h-8 w-8 place-items-center rounded-full bg-white/80 text-xl font-black leading-none text-ink/45 shadow-sm transition hover:-translate-y-0.5 hover:text-ink focus:outline-none focus-visible:ring-4 focus-visible:ring-water/25;
+  }
+
+  .flash-spark {
+    @apply pointer-events-none absolute block;
+    width: 10px;
+    height: 10px;
+    background: var(--flash-main);
+    clip-path: polygon(50% 0, 62% 36%, 100% 50%, 62% 64%, 50% 100%, 38% 64%, 0 50%, 38% 36%);
+    opacity: 0.74;
+    animation: logo-sparkle-drift 1.8s ease-in-out infinite alternate;
+  }
+
+  .flash-spark-a {
+    right: 56px;
+    top: 16px;
+  }
+
+  .flash-spark-b {
+    right: 24px;
+    bottom: 16px;
+    width: 7px;
+    height: 7px;
+    animation-delay: 260ms;
   }
 
   .flash-success {
-    @apply border-leaf-500/20 text-leaf-700;
+    --flash-main: var(--mint);
+    --flash-soft: rgb(var(--mint-soft-rgb) / 0.9);
+  }
+
+  .flash-success .flash-icon::before {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 32 10 22l5-5 5 5L33 9l5 5-18 18Zm-9 5h26v6H11v-6Z'/%3E%3C/svg%3E");
   }
 
   .flash-error {
-    @apply border-rose-200 text-rose-700;
+    --flash-main: var(--rose);
+    --flash-soft: rgb(var(--peach-soft-rgb) / 0.88);
+  }
+
+  .flash-error .flash-icon::before {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 4c11 0 20 9 20 20s-9 20-20 20S4 35 4 24 13 4 24 4Zm-3 10v16h6V14h-6Zm0 20v6h6v-6h-6Z'/%3E%3C/svg%3E");
+  }
+
+  .flash-warning {
+    --flash-main: var(--gold);
+    --flash-soft: rgb(var(--gold-soft-rgb) / 0.88);
+  }
+
+  .flash-warning .flash-icon::before,
+  .flash-info .flash-icon::before {
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 4c11 0 20 9 20 20s-9 20-20 20S4 35 4 24 13 4 24 4Zm-3 18v14h6V22h-6Zm0-10v6h6v-6h-6Z'/%3E%3C/svg%3E");
+  }
+
+  .flash-info {
+    --flash-main: var(--sky);
+    --flash-soft: rgb(var(--sky-soft-rgb) / 0.88);
   }
 
   .landing-hero {
@@ -3495,6 +3601,17 @@
   }
 }
 
+@keyframes flash-panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(18px, -10px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
 @keyframes loader-logo-enter {
   from {
     opacity: 0;
@@ -3652,6 +3769,18 @@
   .site-nav a,
   .nav-logout {
     @apply px-3 py-2;
+  }
+
+  .flash-stack {
+    @apply left-4 right-4 top-4 w-auto;
+  }
+
+  .flash-message {
+    @apply grid-cols-[40px_minmax(0,1fr)_30px] rounded-[22px] p-3;
+  }
+
+  .flash-icon {
+    @apply h-10 w-10 rounded-2xl;
   }
 
   .teacher-hero {
