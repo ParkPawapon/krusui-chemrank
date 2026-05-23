@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\LandingController;
 use App\Controllers\LeaderboardController;
+use App\Controllers\ProfileController;
 use App\Controllers\RankGuideController;
 use App\Controllers\StudentController;
 use App\Controllers\TeacherController;
@@ -16,6 +17,7 @@ use App\Services\LeaderboardService;
 use App\Services\StudentExcelImportService;
 use App\Services\StudentExcelTemplateService;
 use App\Services\StudentService;
+use App\Services\UserPasswordService;
 use App\Services\XlsxStudentImportReader;
 use App\Support\Request;
 use App\Support\Response;
@@ -53,6 +55,7 @@ $robotsHandler = static function (): string {
         'Allow: /',
         'Disallow: /login',
         'Disallow: /student',
+        'Disallow: /student/profile',
         'Disallow: /teacher',
         'Sitemap: ' . absolute_url('/sitemap.xml'),
         '',
@@ -118,6 +121,7 @@ $ranks = new RankRegistry();
 $auth = new AuthService($users, $passwords, $rateLimiter, $sessionManager);
 $academicYears->activeOrCreateDefault();
 $studentService = new StudentService($pdo, $students, $users, $transactions, $academicYears, $activityLogs, $passwords, $ranks);
+$userPasswordService = new UserPasswordService($users, $passwords, $activityLogs);
 $studentImportService = new StudentExcelImportService($studentService, new XlsxStudentImportReader());
 $studentTemplateService = new StudentExcelTemplateService();
 $leaderboard = new LeaderboardService($students, $ranks);
@@ -136,6 +140,16 @@ $router->post('/logout', [new AuthController($auth, $csrf, $ranks), 'logout']);
 $router->get('/student', function () use ($authMiddleware, $auth, $students, $ranks): string {
     $authMiddleware->requireRole(Role::STUDENT);
     return (new StudentController($auth, $students, $ranks))->show();
+});
+
+$router->get('/student/profile', function () use ($authMiddleware, $auth, $userPasswordService, $csrf): string {
+    $authMiddleware->requireRole(Role::STUDENT);
+    return (new ProfileController($auth, $userPasswordService, $csrf))->show();
+});
+
+$router->post('/student/profile/password', function (Request $request) use ($authMiddleware, $auth, $userPasswordService, $csrf): never {
+    $authMiddleware->requireRole(Role::STUDENT);
+    (new ProfileController($auth, $userPasswordService, $csrf))->updatePassword($request);
 });
 
 $router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): string {

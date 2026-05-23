@@ -6,6 +6,7 @@ require dirname(__DIR__) . '/bootstrap/app.php';
 
 $tests = [
     'RankRegistryTest.php',
+    'UserPasswordServiceTest.php',
     'StudentServiceTest.php',
     'XlsxStudentImportReaderTest.php',
     'StudentExcelTemplateServiceTest.php',
