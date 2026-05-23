@@ -82,7 +82,10 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                     <h2>นำเข้ารายชื่อ Excel</h2>
                     <p>เลือกไฟล์ .xlsx แล้วให้ระบบเพิ่มรายชื่อเข้าห้องเรียนในครั้งเดียว</p>
                 </div>
-                <span class="teacher-panel-icon teacher-panel-icon-upload" aria-hidden="true"></span>
+                <div class="teacher-panel-tools">
+                    <span class="teacher-panel-icon teacher-panel-icon-upload" aria-hidden="true"></span>
+                    <a class="teacher-template-download" href="<?= e(url('/teacher/students/import-template')) ?>">ดาวน์โหลดตัวอย่าง Excel</a>
+                </div>
             </div>
 
             <form
@@ -115,7 +118,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
         </section>
     </div>
 
-    <section class="teacher-table-card">
+    <section class="teacher-table-card" data-teacher-results aria-live="polite">
         <div class="teacher-table-head">
             <div class="teacher-table-title-block">
                 <h2>รายชื่อนักเรียน</h2>

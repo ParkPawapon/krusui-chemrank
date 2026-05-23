@@ -8,6 +8,7 @@ $tests = [
     'RankRegistryTest.php',
     'StudentServiceTest.php',
     'XlsxStudentImportReaderTest.php',
+    'StudentExcelTemplateServiceTest.php',
 ];
 
 $failures = 0;
