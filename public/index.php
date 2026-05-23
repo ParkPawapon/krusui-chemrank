@@ -151,6 +151,11 @@ $router->post('/teacher/students/import', function (Request $request) use ($auth
     (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->importStudents($request);
 });
 
+$router->post('/teacher/students/import-preview', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+    $authMiddleware->requireRole(Role::TEACHER);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->previewImport($request);
+});
+
 $router->post('/teacher/drops', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
     (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->adjustDrops($request);

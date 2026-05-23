@@ -1966,15 +1966,6 @@
     box-shadow: var(--shadow-panel);
   }
 
-  .teacher-panel::before {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    inset: 14px;
-    border: 1px solid rgb(255 255 255 / 0.78);
-    border-radius: 24px;
-  }
-
   .teacher-panel::after {
     content: "";
     pointer-events: none;
@@ -2157,7 +2148,7 @@
   }
 
   .teacher-import-bottom {
-    @apply grid items-end gap-4 md:grid-cols-[minmax(0,1fr)_190px];
+    @apply grid items-end gap-4;
   }
 
   .teacher-table-card {
@@ -2170,16 +2161,6 @@
     box-shadow: var(--shadow-pop);
   }
 
-  .teacher-table-card::before {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    inset: 16px;
-    z-index: 0;
-    border: 1px solid rgb(255 255 255 / 0.7);
-    border-radius: 24px;
-  }
-
   .teacher-table-card > * {
     @apply relative z-10;
   }
@@ -2189,8 +2170,8 @@
   }
 
   .teacher-filter-form {
-    @apply w-full rounded-[26px] border border-white/90 bg-white/[0.72] p-3 shadow-sm md:w-auto md:justify-end;
-    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.12), 0 14px 24px rgb(var(--purple-rgb) / 0.08);
+    @apply w-full rounded-[26px] bg-white/[0.62] p-3 shadow-sm md:w-auto md:justify-end;
+    box-shadow: 0 14px 24px rgb(var(--purple-rgb) / 0.07);
   }
 
   .teacher-filter-form label {
@@ -2215,10 +2196,6 @@
     @apply px-1 text-xs font-black text-ink/[0.52];
   }
 
-  .teacher-filter-form .btn {
-    @apply h-12 self-end px-5;
-  }
-
   .teacher-table-title-block {
     @apply grid gap-3;
   }
@@ -2232,7 +2209,107 @@
   }
 
   .teacher-table-scroll {
-    @apply mx-5 mb-5 border-2 md:mx-6 md:mb-6;
+    @apply mx-5 mb-5 overflow-x-auto rounded-[22px] bg-transparent shadow-none md:mx-6 md:mb-6;
+    scrollbar-color: color-mix(in srgb, var(--mint) 70%, var(--sky)) rgb(var(--mint-soft-rgb) / 0.72);
+    scrollbar-width: thin;
+  }
+
+  .teacher-import-modal {
+    @apply m-auto max-h-[min(760px,calc(100vh-2rem))] w-[min(920px,calc(100vw-2rem))] overflow-visible border-0 bg-transparent p-0;
+  }
+
+  .teacher-import-modal::backdrop {
+    background: rgb(var(--ink-rgb) / 0.36);
+    backdrop-filter: blur(6px);
+  }
+
+  .teacher-import-modal-panel {
+    @apply relative grid max-h-[min(760px,calc(100vh-2rem))] gap-5 overflow-hidden rounded-[32px] border border-white/90 bg-white/[0.94] p-5 shadow-soft backdrop-blur md:p-6;
+    background:
+      radial-gradient(circle at 12% 12%, rgb(var(--mint-rgb) / 0.18), transparent 28%),
+      radial-gradient(circle at 90% 8%, rgb(var(--rose-rgb) / 0.14), transparent 26%),
+      linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--paper-rgb) / 0.88));
+    box-shadow: var(--shadow-pop);
+    animation: component-pop-in 360ms cubic-bezier(0.2, 0.85, 0.24, 1.08) both;
+  }
+
+  .teacher-import-modal-head {
+    @apply flex items-start gap-4 pr-10;
+  }
+
+  .teacher-import-modal-head h2 {
+    @apply text-2xl font-black leading-tight text-ink md:text-3xl;
+  }
+
+  .teacher-import-modal-head p {
+    @apply mt-1 text-sm font-bold leading-6 text-ink/[0.58];
+  }
+
+  .teacher-import-modal-icon {
+    @apply grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-blush-100 shadow-sm;
+    color: var(--rose);
+  }
+
+  .teacher-import-modal-icon::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 32px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 8h23l9 9v23H8V8Zm21 3v9h9l-9-9ZM15 28h18v4H15v-4Zm0 7h18v4H15v-4Zm0-14h10v4H15v-4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .teacher-import-modal-close {
+    @apply right-5 top-5;
+  }
+
+  .teacher-import-modal-body {
+    @apply min-h-52 overflow-hidden;
+  }
+
+  .teacher-import-loading {
+    @apply min-h-52 place-items-center gap-3 rounded-[24px] bg-mint-50/80 p-8 text-center text-ink/70;
+  }
+
+  .teacher-import-loading:not([hidden]) {
+    @apply grid;
+  }
+
+  .teacher-import-loading span {
+    @apply h-12 w-12 rounded-full border-4 border-mint-200 border-t-leaf-500;
+    animation: loader-halo-spin 900ms linear infinite;
+  }
+
+  .teacher-import-loading strong {
+    @apply text-sm font-black;
+  }
+
+  .teacher-import-error {
+    @apply rounded-[24px] bg-blush-100/80 p-5 text-sm font-black leading-6 text-rose-700;
+  }
+
+  .teacher-import-preview-table {
+    @apply max-h-[430px] overflow-auto rounded-[24px] border-0 bg-white/70 shadow-sm;
+  }
+
+  .teacher-import-preview-table table {
+    @apply w-full min-w-[720px] border-collapse text-left text-sm;
+  }
+
+  .teacher-import-preview-table th {
+    @apply sticky top-0 bg-mint-100 px-4 py-3 text-xs font-black uppercase text-ink/55;
+  }
+
+  .teacher-import-preview-table td {
+    @apply border-t border-leaf-500/10 px-4 py-3 font-bold text-ink/70;
+  }
+
+  .teacher-import-modal-actions {
+    @apply flex flex-col-reverse gap-3 border-t border-white/80 pt-4 sm:flex-row sm:justify-end;
+  }
+
+  .teacher-import-modal-actions .btn {
+    @apply w-full sm:w-auto;
   }
 
   .dashboard-header,
@@ -3864,11 +3941,6 @@
   .teacher-panel,
   .teacher-table-card {
     @apply rounded-[26px] p-4;
-  }
-
-  .teacher-panel::before {
-    inset: 10px;
-    border-radius: 20px;
   }
 
   .teacher-card-drop {

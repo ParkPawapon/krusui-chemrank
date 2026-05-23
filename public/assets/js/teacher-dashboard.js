@@ -2,6 +2,9 @@ import { animateDropNear, animateSparklesNear } from './motion.js';
 import { showLevelModal, showToast } from './ui.js';
 
 export function initTeacherDashboard() {
+  initTeacherFilters();
+  initImportPreview();
+
   document.querySelectorAll('[data-drop-form]').forEach((form) => {
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -57,6 +60,136 @@ export function initTeacherDashboard() {
       }
     });
   });
+}
+
+function initTeacherFilters() {
+  const form = document.querySelector('[data-teacher-filter-form]');
+  if (!form) return;
+
+  const searchInput = form.querySelector('[data-student-search]');
+  const classSelect = form.querySelector('[data-class-filter]');
+  let timer = null;
+
+  const submitFilter = () => {
+    const params = new URLSearchParams(new FormData(form));
+
+    [...params.entries()].forEach(([key, value]) => {
+      if (String(value).trim() === '') {
+        params.delete(key);
+      }
+    });
+
+    const queryString = params.toString();
+    const nextUrl = `${form.action}${queryString ? `?${queryString}` : ''}`;
+
+    if (nextUrl !== window.location.href) {
+      window.location.assign(nextUrl);
+    }
+  };
+
+  searchInput?.addEventListener('input', () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(submitFilter, 460);
+  });
+
+  classSelect?.addEventListener('change', submitFilter);
+}
+
+function initImportPreview() {
+  const form = document.querySelector('[data-import-form]');
+  const fileInput = form?.querySelector('[data-import-file]');
+  const modal = document.querySelector('[data-import-modal]');
+  const preview = modal?.querySelector('[data-import-preview]');
+  const body = modal?.querySelector('[data-import-preview-body]');
+  const loading = modal?.querySelector('[data-import-loading]');
+  const errorBox = modal?.querySelector('[data-import-error]');
+  const summary = modal?.querySelector('[data-import-modal-summary]');
+  const submitButton = modal?.querySelector('[data-import-submit]');
+
+  if (!form || !fileInput || !modal || !preview || !body || !loading || !errorBox || !summary || !submitButton) {
+    return;
+  }
+
+  const closeModal = () => {
+    if (typeof modal.close === 'function') {
+      modal.close();
+    } else {
+      modal.removeAttribute('open');
+    }
+  };
+
+  modal.querySelectorAll('[data-import-modal-close]').forEach((button) => {
+    button.addEventListener('click', closeModal);
+  });
+
+  submitButton.addEventListener('click', () => {
+    submitButton.disabled = true;
+    form.requestSubmit();
+  });
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    openModal(modal);
+    setImportModalState({ loading, errorBox, preview, submitButton, summary });
+
+    try {
+      const response = await fetch(form.dataset.importPreviewUrl, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'X-Requested-With': 'fetch',
+        },
+        body: new FormData(form),
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload.ok) {
+        throw new Error(payload.message || 'ไม่สามารถอ่านไฟล์รายชื่อได้');
+      }
+
+      renderImportRows(body, payload.rows || []);
+      loading.hidden = true;
+      preview.hidden = false;
+      submitButton.disabled = (payload.rows || []).length === 0;
+      summary.textContent = `พบรายชื่อ ${payload.rows.length} คน ตรวจสอบข้อมูลก่อนกดนำเข้ารายชื่อ`;
+    } catch (error) {
+      loading.hidden = true;
+      errorBox.hidden = false;
+      errorBox.textContent = error.message || 'ไม่สามารถอ่านไฟล์รายชื่อได้';
+      summary.textContent = 'เลือกไฟล์รายชื่อใหม่อีกครั้ง';
+      submitButton.disabled = true;
+    }
+  });
+}
+
+function openModal(modal) {
+  if (typeof modal.showModal === 'function') {
+    modal.showModal();
+  } else {
+    modal.setAttribute('open', 'open');
+  }
+}
+
+function setImportModalState({ loading, errorBox, preview, submitButton, summary }) {
+  loading.hidden = false;
+  errorBox.hidden = true;
+  preview.hidden = true;
+  submitButton.disabled = true;
+  summary.textContent = 'กำลังตรวจรายชื่อในไฟล์ที่เลือก';
+}
+
+function renderImportRows(body, rows) {
+  body.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${escapeHtml(row.row)}</td>
+      <td><span class="soft-pill">${escapeHtml(row.studentNumber)}</span></td>
+      <td>${escapeHtml(row.fullName)}</td>
+      <td>${escapeHtml(row.classLevel)}</td>
+      <td>${escapeHtml(row.room)}</td>
+    </tr>
+  `).join('');
 }
 
 function updateStudentRow(row, payload) {

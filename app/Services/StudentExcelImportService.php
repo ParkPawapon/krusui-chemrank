@@ -71,6 +71,21 @@ final class StudentExcelImportService
     /**
      * @param array<string,mixed>|null $file
      */
+    public function preview(?array $file): array
+    {
+        $this->validateUpload($file);
+
+        $rows = $this->reader->readRows((string) $file['tmp_name'], self::MAX_ROWS);
+        if ($rows === []) {
+            throw new InvalidArgumentException('ไฟล์นี้ยังไม่มีรายชื่อนักเรียนสำหรับนำเข้า');
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @param array<string,mixed>|null $file
+     */
     private function validateUpload(?array $file): void
     {
         if ($file === null || ($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
