@@ -1,0 +1,175 @@
+<?php
+/** @var array<int,\Domain\Entities\Student> $students */
+/** @var array<int,string> $classNames */
+/** @var array<int,\Domain\Entities\AcademicYear> $academicYears */
+/** @var \Domain\Entities\AcademicYear $activeAcademicYear */
+/** @var string $selectedClass */
+/** @var string $search */
+/** @var \Domain\Rank\RankRegistry $ranks */
+/** @var \App\Services\CsrfTokenManager $csrf */
+$totalStudents = count($students);
+$totalDrops = array_sum(array_map(static fn ($student): int => $student->drops, $students));
+$averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) : 0;
+?>
+<section class="teacher-dashboard page-band">
+    <section class="teacher-hero">
+        <div class="teacher-hero-copy">
+            <h1>ห้องครู Chem Rank</h1>
+            <p>เพิ่มรายชื่อ ปรับหยดสาร และดูภาพรวมของห้องเรียนได้ในหน้าเดียว โดยทุกการเปลี่ยนแปลงถูกบันทึกไว้ครบถ้วน</p>
+        </div>
+        <div class="teacher-hero-visual" aria-hidden="true">
+            <span class="teacher-orbit-drop teacher-orbit-drop-a"></span>
+            <span class="teacher-orbit-drop teacher-orbit-drop-b"></span>
+            <div class="teacher-lab-board">
+                <span class="teacher-lab-glow"></span>
+                <span class="teacher-lab-shelf"></span>
+                <span class="teacher-lab-flask"></span>
+                <span class="teacher-lab-tube teacher-lab-tube-mint"></span>
+                <span class="teacher-lab-tube teacher-lab-tube-rose"></span>
+                <span class="teacher-lab-note"></span>
+                <span class="teacher-lab-spark teacher-lab-spark-a"></span>
+                <span class="teacher-lab-spark teacher-lab-spark-b"></span>
+            </div>
+        </div>
+    </section>
+
+    <div class="teacher-workspace-grid">
+        <section class="teacher-panel teacher-add-panel">
+            <span class="teacher-card-drop teacher-card-drop-a" aria-hidden="true"></span>
+            <div class="teacher-panel-head">
+                <div>
+                    <h2>เพิ่มนักเรียน</h2>
+                    <p>เพิ่มรายชื่อทีละคน พร้อมผูกปีการศึกษาและห้องเรียนให้เรียบร้อย</p>
+                </div>
+                <span class="teacher-panel-icon teacher-panel-icon-student" aria-hidden="true"></span>
+            </div>
+            <form action="<?= e(url('/teacher/students')) ?>" method="post" class="teacher-form-grid">
+                <?= $csrf->field() ?>
+                <label>
+                    <span>ชื่อนักเรียน</span>
+                    <input name="full_name" type="text" required maxlength="160" autocomplete="name">
+                </label>
+                <label>
+                    <span>เลขประจำตัวนักเรียน</span>
+                    <input name="student_number" type="text" required inputmode="numeric" pattern="\d{5}" minlength="5" maxlength="5" autocomplete="off" placeholder="เช่น 12345">
+                </label>
+                <label>
+                    <span>ชั้น</span>
+                    <input name="class_level" type="text" required maxlength="20" placeholder="เช่น ม.4">
+                </label>
+                <label>
+                    <span>ห้อง</span>
+                    <input name="room" type="text" required maxlength="20" placeholder="เช่น 1">
+                </label>
+                <label>
+                    <span>ปีการศึกษา</span>
+                    <select name="academic_year_id" required>
+                        <?php foreach ($academicYears as $academicYear): ?>
+                            <option value="<?= e((string) $academicYear->id) ?>" <?= $academicYear->id === $activeAcademicYear->id ? 'selected' : '' ?>>
+                                <?= e($academicYear->name) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <div class="teacher-password-note">
+                    <span>รหัสผ่านเริ่มต้น</span>
+                    <strong>12345678</strong>
+                </div>
+                <button class="btn btn-primary teacher-submit" type="submit">เพิ่มนักเรียน</button>
+            </form>
+        </section>
+
+        <section id="teacher-import" class="teacher-panel teacher-import-panel">
+            <span class="teacher-card-drop teacher-card-drop-b" aria-hidden="true"></span>
+            <div class="teacher-panel-head">
+                <div>
+                    <h2>นำเข้ารายชื่อ Excel</h2>
+                    <p>เลือกไฟล์ .xlsx แล้วให้ระบบเพิ่มรายชื่อเข้าห้องเรียนในครั้งเดียว</p>
+                </div>
+                <span class="teacher-panel-icon teacher-panel-icon-upload" aria-hidden="true"></span>
+            </div>
+
+            <form action="<?= e(url('/teacher/students/import')) ?>" method="post" enctype="multipart/form-data" class="teacher-import-form">
+                <?= $csrf->field() ?>
+                <label class="teacher-upload-box">
+                    <span>ไฟล์รายชื่อนักเรียน</span>
+                    <input name="student_file" type="file" required accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <small>ขนาดไฟล์ไม่เกิน 5 MB</small>
+                </label>
+                <div class="teacher-import-fields">
+                    <label>
+                        <span>ปีการศึกษา</span>
+                        <select name="academic_year_id" required>
+                            <?php foreach ($academicYears as $academicYear): ?>
+                                <option value="<?= e((string) $academicYear->id) ?>" <?= $academicYear->id === $activeAcademicYear->id ? 'selected' : '' ?>>
+                                    <?= e($academicYear->name) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                </div>
+                <div class="teacher-import-note">
+                    <span>รหัสผ่านเริ่มต้นของนักเรียนที่นำเข้า</span>
+                    <strong>12345678</strong>
+                </div>
+                <button class="btn btn-secondary teacher-submit" type="submit">นำเข้ารายชื่อ</button>
+            </form>
+        </section>
+    </div>
+
+    <section class="teacher-table-card">
+        <div class="teacher-table-head">
+            <div>
+                <h2>รายชื่อนักเรียน</h2>
+                <p>ปีการศึกษาปัจจุบัน <?= e($activeAcademicYear->name) ?> · ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</p>
+            </div>
+            <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form">
+                <label>
+                    <span class="sr-only">ค้นหานักเรียน</span>
+                    <input name="q" type="search" value="<?= e($search) ?>" placeholder="ค้นหาชื่อหรือเลขประจำตัว" data-student-search>
+                </label>
+                <label>
+                    <span class="sr-only">เลือกชั้นเรียน</span>
+                    <select name="class" data-class-filter>
+                        <option value="">ทุกชั้นเรียน</option>
+                        <?php foreach ($classNames as $className): ?>
+                            <option value="<?= e($className) ?>" <?= $selectedClass === $className ? 'selected' : '' ?>><?= e($className) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <button class="btn btn-ghost" type="submit">กรอง</button>
+            </form>
+        </div>
+
+        <div class="table-scroll teacher-table-scroll">
+            <table class="student-table">
+                <thead>
+                    <tr>
+                        <th>เลขประจำตัว</th>
+                        <th>นักเรียน</th>
+                        <th>ชั้น</th>
+                        <th>ห้อง</th>
+                        <th>ปีการศึกษา</th>
+                        <th>Rank</th>
+                        <th>หยดสาร</th>
+                        <th>ไป Rank ถัดไป</th>
+                        <th>ปรับหยด</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!$students): ?>
+                        <tr>
+                            <td colspan="10">
+                                <div class="table-empty">ยังไม่มีนักเรียนในรายการ</div>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                    <?php foreach ($students as $student): ?>
+                        <?= \App\Support\View::partial('partials/student-row', ['student' => $student, 'ranks' => $ranks, 'csrf' => $csrf]) ?>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>
