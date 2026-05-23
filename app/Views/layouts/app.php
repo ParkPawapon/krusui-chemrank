@@ -5,8 +5,7 @@ use App\Support\Flash;
 use Domain\Rank\RankRegistry;
 
 $siteName = (string) config('app.name', 'Chem Rank');
-$defaultSeoTitle = (string) config('seo.title', $siteName);
-$rawTitle = (string) ($seoTitle ?? (isset($title) ? $title . ' | ' . $siteName : $defaultSeoTitle));
+$rawTitle = 'Chem Rank เส้นทางสู่นักเคมี | kmewithsui';
 $metaDescription = (string) ($description ?? config('seo.description', 'ระบบสะสมหยดสารสำหรับห้องเรียนเคมี'));
 $metaKeywords = (string) config('seo.keywords', 'Chem Rank, เคมี, หยดสาร');
 $metaRobots = (string) ($robots ?? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1');
@@ -111,10 +110,28 @@ $navItems = match ($currentRole) {
         </header>
 
         <?php if ($flashMessages): ?>
-            <section class="flash-stack" aria-live="polite">
+            <?php
+            $flashTitles = [
+                'success' => 'ทำรายการเรียบร้อย',
+                'error' => 'ตรวจสอบข้อมูลอีกครั้ง',
+                'warning' => 'ตรวจสอบข้อมูลอีกครั้ง',
+                'info' => 'แจ้งเตือน',
+            ];
+            ?>
+            <section class="flash-stack" aria-live="polite" aria-label="ข้อความแจ้งเตือน">
                 <?php foreach ($flashMessages as $type => $messages): ?>
                     <?php foreach ($messages as $message): ?>
-                        <div class="flash-message flash-<?= e($type) ?>"><?= e($message) ?></div>
+                        <?php $flashTitle = $flashTitles[$type] ?? $flashTitles['info']; ?>
+                        <article class="flash-message flash-<?= e($type) ?>" data-flash-message role="<?= $type === 'error' ? 'alert' : 'status' ?>">
+                            <span class="flash-icon" aria-hidden="true"></span>
+                            <span class="flash-spark flash-spark-a" aria-hidden="true"></span>
+                            <span class="flash-spark flash-spark-b" aria-hidden="true"></span>
+                            <div class="flash-copy">
+                                <strong><?= e($flashTitle) ?></strong>
+                                <p><?= e($message) ?></p>
+                            </div>
+                            <button class="flash-close" type="button" data-flash-close aria-label="ปิดข้อความแจ้งเตือน">×</button>
+                        </article>
                     <?php endforeach; ?>
                 <?php endforeach; ?>
             </section>

@@ -1,5 +1,10 @@
-import { initTeacherDashboard } from './teacher-dashboard.js';
-import { initConfirmForms } from './ui.js';
+const moduleVersion = new URL(import.meta.url).search;
 
-initConfirmForms();
-initTeacherDashboard();
+Promise.all([
+  import(`./teacher-dashboard.js${moduleVersion}`),
+  import(`./ui.js${moduleVersion}`),
+]).then(([teacherDashboard, ui]) => {
+  ui.initConfirmForms();
+  ui.initFlashMessages();
+  teacherDashboard.initTeacherDashboard();
+});

@@ -10,6 +10,19 @@ export function initConfirmForms() {
   });
 }
 
+export function initFlashMessages() {
+  document.querySelectorAll('[data-flash-message]').forEach((message) => {
+    const dismiss = () => {
+      message.style.opacity = '0';
+      message.style.transform = 'translate3d(12px, -8px, 0) scale(0.98)';
+      window.setTimeout(() => message.remove(), 180);
+    };
+
+    message.querySelector('[data-flash-close]')?.addEventListener('click', dismiss);
+    window.setTimeout(dismiss, 6400);
+  });
+}
+
 export function showToast(message, variant = 'success') {
   const root = document.querySelector('[data-toast-root]');
   if (!root) return;
