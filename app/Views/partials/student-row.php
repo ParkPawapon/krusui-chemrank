@@ -3,13 +3,12 @@
 /** @var \Domain\Rank\RankRegistry $ranks */
 /** @var \App\Services\CsrfTokenManager $csrf */
 $rank = $ranks->forDrops($student->drops);
-$progress = $ranks->progress($student->drops);
+$classroom = trim($student->classLevel . '/' . $student->room, '/');
 ?>
 <tr data-student-row data-student-id="<?= e((string) $student->id) ?>" data-rank-level="<?= e((string) $rank->level) ?>">
     <td><span class="soft-pill"><?= e($student->studentNumber) ?></span></td>
-    <td class="font-semibold text-ink"><?= e($student->fullName) ?></td>
-    <td><?= e($student->classLevel) ?></td>
-    <td><?= e($student->room) ?></td>
+    <td class="student-name-cell"><?= e($student->fullName) ?></td>
+    <td><span class="classroom-pill"><?= e($classroom) ?></span></td>
     <td><?= e($student->academicYearName) ?></td>
     <td data-rank-cell>
         <?= \App\Support\View::partial('partials/rank-badge', ['rank' => $rank, 'size' => 'sm']) ?>
@@ -19,12 +18,6 @@ $progress = $ranks->progress($student->drops);
             <span data-drops-value><?= e((string) $student->drops) ?></span>
             <small>หยดสาร</small>
         </div>
-    </td>
-    <td class="min-w-[220px]">
-        <div class="mini-progress" aria-label="<?= e($progress->message) ?>">
-            <span style="width: <?= e((string) $progress->percentToNext) ?>%"></span>
-        </div>
-        <small class="muted" data-progress-message><?= e($progress->message) ?></small>
     </td>
     <td>
         <form class="drop-action-form" data-drop-form action="<?= e(url('/teacher/drops')) ?>" method="post">

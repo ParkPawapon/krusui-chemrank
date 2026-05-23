@@ -185,9 +185,10 @@ function initImportPreview() {
   const loading = modal?.querySelector('[data-import-loading]');
   const errorBox = modal?.querySelector('[data-import-error]');
   const summary = modal?.querySelector('[data-import-modal-summary]');
+  const countBox = modal?.querySelector('[data-import-modal-count]');
   const submitButton = modal?.querySelector('[data-import-submit]');
 
-  if (!form || !fileInput || !modal || !preview || !body || !loading || !errorBox || !summary || !submitButton) {
+  if (!form || !fileInput || !modal || !preview || !body || !loading || !errorBox || !summary || !countBox || !submitButton) {
     return;
   }
 
@@ -213,7 +214,7 @@ function initImportPreview() {
     if (!file) return;
 
     openModal(modal);
-    setImportModalState({ loading, errorBox, preview, submitButton, summary });
+    setImportModalState({ loading, errorBox, preview, submitButton, summary, countBox });
 
     try {
       const response = await fetch(form.dataset.importPreviewUrl, {
@@ -235,11 +236,13 @@ function initImportPreview() {
       preview.hidden = false;
       submitButton.disabled = (payload.rows || []).length === 0;
       summary.textContent = `พบรายชื่อ ${payload.rows.length} คน ตรวจสอบข้อมูลก่อนกดนำเข้ารายชื่อ`;
+      updateImportCount(countBox, payload.rows.length);
     } catch (error) {
       loading.hidden = true;
       errorBox.hidden = false;
       errorBox.textContent = error.message || 'ไม่สามารถอ่านไฟล์รายชื่อได้';
       summary.textContent = 'เลือกไฟล์รายชื่อใหม่อีกครั้ง';
+      updateImportCount(countBox, 0);
       submitButton.disabled = true;
     }
   });
@@ -253,24 +256,30 @@ function openModal(modal) {
   }
 }
 
-function setImportModalState({ loading, errorBox, preview, submitButton, summary }) {
+function setImportModalState({ loading, errorBox, preview, submitButton, summary, countBox }) {
   loading.hidden = false;
   errorBox.hidden = true;
   preview.hidden = true;
   submitButton.disabled = true;
   summary.textContent = 'กำลังตรวจรายชื่อในไฟล์ที่เลือก';
+  updateImportCount(countBox, 0);
 }
 
 function renderImportRows(body, rows) {
   body.innerHTML = rows.map((row) => `
     <tr>
-      <td>${escapeHtml(row.row)}</td>
+      <td><span class="import-row-index">${escapeHtml(row.row)}</span></td>
       <td><span class="soft-pill">${escapeHtml(row.studentNumber)}</span></td>
       <td>${escapeHtml(row.fullName)}</td>
-      <td>${escapeHtml(row.classLevel)}</td>
-      <td>${escapeHtml(row.room)}</td>
+      <td><span class="classroom-pill">${escapeHtml(row.classLevel)}/${escapeHtml(row.room)}</span></td>
+      <td><span class="import-ready-chip">พร้อมนำเข้า</span></td>
     </tr>
   `).join('');
+}
+
+function updateImportCount(countBox, value) {
+  const countNode = countBox.querySelector('strong');
+  if (countNode) countNode.textContent = String(value);
 }
 
 function updateStudentRow(row, payload) {
