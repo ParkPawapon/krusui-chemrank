@@ -1,0 +1,88 @@
+services:
+  nginx:
+    build:
+      context: .
+      target: nginx-runtime
+    depends_on:
+      app:
+        condition: service_started
+    ports:
+      - "${APP_PORT:-8080}:80"
+    restart: unless-stopped
+    networks:
+      - chemrank
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/healthz >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      target: php-runtime
+    environment:
+      APP_NAME: "${APP_NAME:-Chem Rank}"
+      APP_ENV: "${APP_ENV:-production}"
+      APP_DEBUG: "${APP_DEBUG:-false}"
+      APP_URL: "${APP_URL:-http://localhost:8080}"
+      APP_TIMEZONE: "${APP_TIMEZONE:-Asia/Bangkok}"
+      DB_CONNECTION: "mysql"
+      DB_HOST: "mysql"
+      DB_PORT: "3306"
+      DB_DATABASE: "${MYSQL_DATABASE:-chem_rank}"
+      DB_USERNAME: "${MYSQL_USER:-chem_rank_app}"
+      DB_PASSWORD: "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"
+      DB_CHARSET: "utf8mb4"
+      SESSION_NAME: "${SESSION_NAME:-chem_rank_session}"
+      SESSION_LIFETIME: "${SESSION_LIFETIME:-7200}"
+      SESSION_SECURE_COOKIE: "${SESSION_SECURE_COOKIE:-false}"
+      SESSION_SAME_SITE: "${SESSION_SAME_SITE:-Lax}"
+      LOGIN_ATTEMPTS: "${LOGIN_ATTEMPTS:-5}"
+      LOGIN_DECAY_SECONDS: "${LOGIN_DECAY_SECONDS:-900}"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - app_storage:/var/www/html/storage
+    restart: unless-stopped
+    networks:
+      - chemrank
+    healthcheck:
+      test: ["CMD-SHELL", "php -v >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  mysql:
+    image: mysql:8.4
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+07:00
+      - --log-error-verbosity=2
+    environment:
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-chem_rank}"
+      MYSQL_USER: "${MYSQL_USER:-chem_rank_app}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:?MYSQL_PASSWORD is required}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - chemrank
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+volumes:
+  mysql_data:
+  app_storage:
+
+networks:
+  chemrank:
+    driver: bridge
+
