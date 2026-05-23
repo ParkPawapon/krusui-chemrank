@@ -14,6 +14,7 @@ use App\Services\AuthService;
 use App\Services\CsrfTokenManager;
 use App\Services\LeaderboardService;
 use App\Services\StudentExcelImportService;
+use App\Services\StudentExcelTemplateService;
 use App\Services\StudentService;
 use App\Services\XlsxStudentImportReader;
 use App\Support\Request;
@@ -118,6 +119,7 @@ $auth = new AuthService($users, $passwords, $rateLimiter, $sessionManager);
 $academicYears->activeOrCreateDefault();
 $studentService = new StudentService($pdo, $students, $users, $transactions, $academicYears, $activityLogs, $passwords, $ranks);
 $studentImportService = new StudentExcelImportService($studentService, new XlsxStudentImportReader());
+$studentTemplateService = new StudentExcelTemplateService();
 $leaderboard = new LeaderboardService($students, $ranks);
 $authMiddleware = new AuthMiddleware($auth);
 
@@ -136,34 +138,39 @@ $router->get('/student', function () use ($authMiddleware, $auth, $students, $ra
     return (new StudentController($auth, $students, $ranks))->show();
 });
 
-$router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): string {
+$router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): string {
     $authMiddleware->requireRole(Role::TEACHER);
-    return (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->dashboard($request);
+    return (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->dashboard($request);
 });
 
-$router->post('/teacher/students', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->createStudent($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->createStudent($request);
 });
 
-$router->post('/teacher/students/import', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students/import', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->importStudents($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->importStudents($request);
 });
 
-$router->post('/teacher/students/import-preview', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students/import-preview', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->previewImport($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->previewImport($request);
 });
 
-$router->post('/teacher/drops', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+$router->get('/teacher/students/import-template', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->adjustDrops($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->downloadImportTemplate();
 });
 
-$router->post('/teacher/students/delete', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/drops', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $academicYears, $ranks, $csrf))->deleteStudent($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->adjustDrops($request);
+});
+
+$router->post('/teacher/students/delete', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+    $authMiddleware->requireRole(Role::TEACHER);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->deleteStudent($request);
 });
 
 $router->get('/leaderboard', function (Request $request) use ($leaderboard, $students): string {

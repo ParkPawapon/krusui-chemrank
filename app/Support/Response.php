@@ -23,6 +23,19 @@ final class Response
         exit;
     }
 
+    public static function downloadContent(string $content, string $filename, string $contentType): never
+    {
+        $safeFilename = preg_replace('/[^A-Za-z0-9._-]/', '-', $filename) ?: 'download.bin';
+
+        http_response_code(200);
+        header('Content-Type: ' . $contentType);
+        header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
+        header('Content-Length: ' . strlen($content));
+        header('Cache-Control: private, max-age=3600');
+        echo $content;
+        exit;
+    }
+
     public static function abort(int $status = 404, string $message = 'ไม่พบหน้าที่ต้องการ'): never
     {
         http_response_code($status);

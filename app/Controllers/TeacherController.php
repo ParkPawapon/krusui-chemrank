@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Services\AuthService;
 use App\Services\CsrfTokenManager;
 use App\Services\StudentExcelImportService;
+use App\Services\StudentExcelTemplateService;
 use App\Services\StudentService;
 use App\Support\Flash;
 use App\Support\Request;
@@ -25,6 +26,7 @@ final class TeacherController
         private readonly StudentRepository $students,
         private readonly StudentService $studentService,
         private readonly StudentExcelImportService $studentImportService,
+        private readonly StudentExcelTemplateService $studentTemplateService,
         private readonly AcademicYearRepository $academicYears,
         private readonly RankRegistry $ranks,
         private readonly CsrfTokenManager $csrf,
@@ -126,6 +128,17 @@ final class TeacherController
             Response::json(['ok' => false, 'message' => $exception->getMessage()], 422);
         } catch (\Throwable) {
             Response::json(['ok' => false, 'message' => 'ไม่สามารถอ่านไฟล์รายชื่อได้ กรุณาลองใหม่'], 500);
+        }
+    }
+
+    public function downloadImportTemplate(): never
+    {
+        try {
+            $template = $this->studentTemplateService->create();
+
+            Response::downloadContent($template['content'], $template['filename'], $template['mimeType']);
+        } catch (\Throwable) {
+            Response::abort(500, 'ไม่สามารถดาวน์โหลดไฟล์ตัวอย่างได้ในขณะนี้');
         }
     }
 

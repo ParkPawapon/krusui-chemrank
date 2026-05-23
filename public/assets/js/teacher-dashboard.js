@@ -4,8 +4,17 @@ import { showLevelModal, showToast } from './ui.js';
 export function initTeacherDashboard() {
   initTeacherFilters();
   initImportPreview();
+  bindDropForms(document);
+}
 
-  document.querySelectorAll('[data-drop-form]').forEach((form) => {
+let activeTeacherFilterRequest = null;
+let teacherPopstateBound = false;
+
+function bindDropForms(root) {
+  root.querySelectorAll('[data-drop-form]').forEach((form) => {
+    if (form.dataset.dropBound === 'true') return;
+    form.dataset.dropBound = 'true';
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
@@ -65,34 +74,106 @@ export function initTeacherDashboard() {
 function initTeacherFilters() {
   const form = document.querySelector('[data-teacher-filter-form]');
   if (!form) return;
+  if (form.dataset.filterBound === 'true') return;
+  form.dataset.filterBound = 'true';
 
   const searchInput = form.querySelector('[data-student-search]');
   const classSelect = form.querySelector('[data-class-filter]');
   let timer = null;
 
   const submitFilter = () => {
-    const params = new URLSearchParams(new FormData(form));
-
-    [...params.entries()].forEach(([key, value]) => {
-      if (String(value).trim() === '') {
-        params.delete(key);
-      }
-    });
-
-    const queryString = params.toString();
-    const nextUrl = `${form.action}${queryString ? `?${queryString}` : ''}`;
-
-    if (nextUrl !== window.location.href) {
-      window.location.assign(nextUrl);
-    }
+    loadTeacherResults(buildFilterUrl(form), true);
   };
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    submitFilter();
+  });
 
   searchInput?.addEventListener('input', () => {
     window.clearTimeout(timer);
-    timer = window.setTimeout(submitFilter, 460);
+    timer = window.setTimeout(submitFilter, 360);
   });
 
   classSelect?.addEventListener('change', submitFilter);
+
+  if (!teacherPopstateBound) {
+    teacherPopstateBound = true;
+    window.addEventListener('popstate', () => {
+      if (document.querySelector('[data-teacher-results]')) {
+        loadTeacherResults(new URL(window.location.href), false);
+      }
+    });
+  }
+}
+
+function buildFilterUrl(form) {
+  const url = new URL(form.action, window.location.origin);
+  const params = new URLSearchParams(new FormData(form));
+
+  [...params.entries()].forEach(([key, value]) => {
+    if (String(value).trim() === '') {
+      params.delete(key);
+    }
+  });
+
+  url.search = params.toString();
+
+  return url;
+}
+
+async function loadTeacherResults(url, updateHistory) {
+  const currentResults = document.querySelector('[data-teacher-results]');
+  if (!currentResults) return;
+
+  const nextUrl = url.toString();
+  if (nextUrl === window.location.href && updateHistory) {
+    return;
+  }
+
+  activeTeacherFilterRequest?.abort();
+  const controller = new AbortController();
+  activeTeacherFilterRequest = controller;
+  currentResults.setAttribute('aria-busy', 'true');
+
+  try {
+    const response = await fetch(nextUrl, {
+      headers: {
+        Accept: 'text/html',
+        'X-Requested-With': 'fetch',
+      },
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error('Unable to load teacher results.');
+    }
+
+    const html = await response.text();
+    const nextDocument = new DOMParser().parseFromString(html, 'text/html');
+    const nextResults = nextDocument.querySelector('[data-teacher-results]');
+
+    if (!nextResults) {
+      throw new Error('Teacher results were not found.');
+    }
+
+    currentResults.replaceWith(nextResults);
+    bindDropForms(nextResults);
+    initTeacherFilters();
+
+    if (updateHistory) {
+      window.history.pushState({}, '', nextUrl);
+    }
+  } catch (error) {
+    if (error.name === 'AbortError') return;
+    window.location.assign(nextUrl);
+  } finally {
+    if (activeTeacherFilterRequest === controller) {
+      activeTeacherFilterRequest = null;
+    }
+
+    document.querySelector('[data-teacher-results]')?.removeAttribute('aria-busy');
+  }
 }
 
 function initImportPreview() {

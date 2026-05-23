@@ -1,12 +1,16 @@
 export function initConfirmForms() {
-  document.querySelectorAll('form[data-confirm]').forEach((form) => {
-    form.addEventListener('submit', (event) => {
-      const message = form.getAttribute('data-confirm') || 'ยืนยันการทำรายการ?';
+  if (document.documentElement.dataset.confirmBound === 'true') return;
+  document.documentElement.dataset.confirmBound = 'true';
 
-      if (!window.confirm(message)) {
-        event.preventDefault();
-      }
-    });
+  document.addEventListener('submit', (event) => {
+    const form = event.target.closest?.('form[data-confirm]');
+    if (!form) return;
+
+    const message = form.getAttribute('data-confirm') || 'ยืนยันการทำรายการ?';
+
+    if (!window.confirm(message)) {
+      event.preventDefault();
+    }
   });
 }
 
