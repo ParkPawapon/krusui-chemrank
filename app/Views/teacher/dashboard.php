@@ -127,6 +127,9 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                     <span>ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</span>
                 </div>
             </div>
+        </div>
+
+        <div class="teacher-table-toolbar">
             <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form" data-teacher-filter-form>
                 <label>
                     <span class="teacher-filter-label">ค้นหานักเรียน</span>
@@ -149,13 +152,11 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 <thead>
                     <tr>
                         <th>เลขประจำตัว</th>
-                        <th>นักเรียน</th>
-                        <th>ชั้น</th>
-                        <th>ห้อง</th>
+                        <th>ชื่อจริง - นามสกุล</th>
+                        <th>ห้องเรียน</th>
                         <th>ปีการศึกษา</th>
                         <th>Rank</th>
                         <th>หยดสาร</th>
-                        <th>ไป Rank ถัดไป</th>
                         <th>ปรับหยด</th>
                         <th></th>
                     </tr>
@@ -163,7 +164,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 <tbody>
                     <?php if (!$students): ?>
                         <tr>
-                            <td colspan="10">
+                            <td colspan="8">
                                 <div class="table-empty">ยังไม่มีนักเรียนในรายการ</div>
                             </td>
                         </tr>
@@ -179,17 +180,27 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
     <dialog class="teacher-import-modal" data-import-modal aria-labelledby="import-modal-title">
         <div class="teacher-import-modal-panel">
             <button class="modal-close teacher-import-modal-close" type="button" data-import-modal-close aria-label="ปิด">×</button>
+            <span class="teacher-import-modal-aura teacher-import-modal-aura-mint" aria-hidden="true"></span>
+            <span class="teacher-import-modal-aura teacher-import-modal-aura-rose" aria-hidden="true"></span>
             <div class="teacher-import-modal-head">
                 <span class="teacher-import-modal-icon" aria-hidden="true"></span>
-                <div>
+                <div class="teacher-import-modal-title">
+                    <small>Excel Import Preview</small>
                     <h2 id="import-modal-title">ตรวจรายชื่อก่อนนำเข้า</h2>
                     <p data-import-modal-summary>เลือกไฟล์รายชื่อเพื่อดูข้อมูลทั้งหมดก่อนบันทึกเข้าระบบ</p>
+                </div>
+                <div class="teacher-import-modal-count" data-import-modal-count>
+                    <strong>0</strong>
+                    <span>รายชื่อ</span>
                 </div>
             </div>
             <div class="teacher-import-modal-body">
                 <div class="teacher-import-loading" data-import-loading hidden>
                     <span aria-hidden="true"></span>
-                    <strong>กำลังอ่านไฟล์รายชื่อ</strong>
+                    <div>
+                        <strong>กำลังอ่านไฟล์รายชื่อ</strong>
+                        <small>ระบบกำลังตรวจคอลัมน์และจัดข้อมูลให้อ่านง่าย</small>
+                    </div>
                 </div>
                 <div class="teacher-import-error" data-import-error hidden></div>
                 <div class="teacher-import-preview-table table-scroll" data-import-preview hidden>
@@ -198,9 +209,9 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                             <tr>
                                 <th>แถว</th>
                                 <th>เลขประจำตัว</th>
-                                <th>ชื่อนักเรียน</th>
-                                <th>ชั้น</th>
-                                <th>ห้อง</th>
+                                <th>ชื่อจริง - นามสกุล</th>
+                                <th>ห้องเรียน</th>
+                                <th>สถานะ</th>
                             </tr>
                         </thead>
                         <tbody data-import-preview-body></tbody>
@@ -208,8 +219,8 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 </div>
             </div>
             <div class="teacher-import-modal-actions">
-                <button class="btn btn-ghost" type="button" data-import-modal-close>เลือกไฟล์ใหม่</button>
-                <button class="btn btn-secondary" type="button" data-import-submit disabled>นำเข้ารายชื่อ</button>
+                <button class="btn teacher-import-secondary-action" type="button" data-import-modal-close>เลือกไฟล์ใหม่</button>
+                <button class="btn btn-secondary teacher-import-primary-action" type="button" data-import-submit disabled>นำเข้ารายชื่อ</button>
             </div>
         </div>
     </dialog>

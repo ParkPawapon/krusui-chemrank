@@ -2143,7 +2143,11 @@
   }
 
   .teacher-upload-box input[type="file"] {
-    @apply mt-1 cursor-pointer rounded-[20px] bg-white/90 py-3;
+    margin-top: 0.75rem;
+    cursor: pointer;
+    border-radius: 20px;
+    background-color: hsla(0, 0%, 100%, 0.9);
+    padding-top: 0.75rem;
   }
 
   .teacher-upload-box input[type="file"]::file-selector-button {
@@ -2189,12 +2193,19 @@
   }
 
   .teacher-table-head {
-    @apply m-0 gap-5 px-5 py-5 md:px-6 md:py-6 xl:items-end;
+    @apply m-0 gap-5 px-5 pb-3 pt-5 md:px-6 md:pt-6 xl:items-end;
+  }
+
+  .teacher-table-toolbar {
+    @apply mx-5 mb-4 rounded-[26px] border border-white/90 bg-white/[0.72] p-3 shadow-sm backdrop-blur md:mx-6;
+    background:
+      radial-gradient(circle at 8% 30%, rgb(var(--mint-rgb) / 0.15), transparent 30%),
+      linear-gradient(135deg, rgb(255 255 255 / 0.86), rgb(var(--paper-rgb) / 0.62));
   }
 
   .teacher-filter-form {
-    @apply w-full rounded-[26px] bg-white/[0.62] p-3 shadow-sm md:w-auto md:justify-end;
-    box-shadow: 0 14px 24px rgb(var(--purple-rgb) / 0.07);
+    @apply grid w-full gap-3 bg-transparent p-0 shadow-none md:grid-cols-[minmax(280px,1fr)_220px] md:items-end;
+    box-shadow: none;
   }
 
   .teacher-filter-form label {
@@ -2203,16 +2214,16 @@
 
   .teacher-filter-form input,
   .teacher-filter-form select {
-    @apply h-12 rounded-2xl border-white bg-white/90 px-4 text-sm font-bold text-ink shadow-sm;
-    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.2);
+    @apply h-12 w-full rounded-2xl border-white bg-white/95 px-4 text-sm font-bold text-ink shadow-sm;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.22), 0 10px 18px rgb(var(--mint-rgb) / 0.06);
   }
 
   .teacher-filter-form input {
-    @apply md:w-72;
+    @apply w-full;
   }
 
   .teacher-filter-form select {
-    @apply md:w-44;
+    @apply w-full;
   }
 
   .teacher-filter-label {
@@ -2232,54 +2243,107 @@
   }
 
   .teacher-table-scroll {
-    @apply mx-5 mb-5 overflow-x-auto rounded-[22px] bg-transparent shadow-none md:mx-6 md:mb-6;
+    @apply mx-5 mb-5 overflow-x-auto rounded-[24px] bg-white/[0.74] p-2 shadow-sm md:mx-6 md:mb-6;
     scrollbar-color: color-mix(in srgb, var(--mint) 70%, var(--sky)) rgb(var(--mint-soft-rgb) / 0.72);
     scrollbar-width: thin;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.78), 0 16px 28px rgb(var(--mint-rgb) / 0.08);
   }
 
   .teacher-import-modal {
-    @apply m-auto max-h-[min(760px,calc(100vh-2rem))] w-[min(920px,calc(100vw-2rem))] overflow-visible border-0 bg-transparent p-0;
+    @apply m-auto max-h-[min(820px,calc(100vh-2rem))] w-[min(1040px,calc(100vw-2rem))] overflow-visible border-0 bg-transparent p-0;
   }
 
   .teacher-import-modal::backdrop {
-    background: rgb(var(--ink-rgb) / 0.36);
-    backdrop-filter: blur(6px);
+    background:
+      radial-gradient(circle at 24% 18%, rgb(var(--mint-rgb) / 0.22), transparent 34%),
+      radial-gradient(circle at 84% 16%, rgb(var(--rose-rgb) / 0.18), transparent 30%),
+      rgb(var(--ink-rgb) / 0.38);
+    backdrop-filter: blur(10px);
   }
 
   .teacher-import-modal-panel {
-    @apply relative grid max-h-[min(760px,calc(100vh-2rem))] gap-5 overflow-hidden rounded-[32px] border border-white/90 bg-white/[0.94] p-5 shadow-soft backdrop-blur md:p-6;
+    @apply relative grid max-h-[min(820px,calc(100vh-2rem))] gap-5 overflow-hidden rounded-[34px] border border-white/90 bg-white/[0.94] p-5 shadow-soft backdrop-blur md:p-6;
     background:
-      radial-gradient(circle at 12% 12%, rgb(var(--mint-rgb) / 0.18), transparent 28%),
-      radial-gradient(circle at 90% 8%, rgb(var(--rose-rgb) / 0.14), transparent 26%),
-      linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--paper-rgb) / 0.88));
+      linear-gradient(rgb(255 255 255 / 0.56), rgb(255 255 255 / 0.16)) 22px 18px / 170px 18px no-repeat,
+      radial-gradient(circle at 12% 10%, rgb(var(--mint-rgb) / 0.2), transparent 30%),
+      radial-gradient(circle at 88% 6%, rgb(var(--rose-rgb) / 0.16), transparent 28%),
+      radial-gradient(circle at 78% 90%, rgb(var(--gold-rgb) / 0.18), transparent 34%),
+      linear-gradient(135deg, rgb(255 255 255 / 0.97), rgb(var(--paper-rgb) / 0.9));
     box-shadow: var(--shadow-pop);
     animation: component-pop-in 360ms cubic-bezier(0.2, 0.85, 0.24, 1.08) both;
   }
 
+  .teacher-import-modal-aura {
+    @apply pointer-events-none absolute rounded-full;
+    filter: blur(0.2px);
+    opacity: 0.74;
+  }
+
+  .teacher-import-modal-aura-mint {
+    right: -54px;
+    top: 78px;
+    width: 150px;
+    height: 150px;
+    background:
+      radial-gradient(circle at 36% 30%, rgb(255 255 255 / 0.86) 0 11px, transparent 12px),
+      rgb(var(--mint-rgb) / 0.18);
+  }
+
+  .teacher-import-modal-aura-rose {
+    left: -52px;
+    bottom: -64px;
+    width: 170px;
+    height: 170px;
+    background:
+      radial-gradient(circle at 60% 38%, rgb(255 255 255 / 0.72) 0 8px, transparent 9px),
+      rgb(var(--rose-rgb) / 0.13);
+  }
+
   .teacher-import-modal-head {
-    @apply flex items-start gap-4 pr-10;
+    @apply relative z-10 grid gap-4 pr-10 md:grid-cols-[72px_minmax(0,1fr)_auto] md:items-center;
+  }
+
+  .teacher-import-modal-title {
+    @apply min-w-0;
+  }
+
+  .teacher-import-modal-title small {
+    @apply mb-1 inline-flex rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
   }
 
   .teacher-import-modal-head h2 {
-    @apply text-2xl font-black leading-tight text-ink md:text-3xl;
+    @apply text-3xl font-black leading-tight text-ink md:text-4xl;
   }
 
   .teacher-import-modal-head p {
-    @apply mt-1 text-sm font-bold leading-6 text-ink/[0.58];
+    @apply mt-2 max-w-2xl text-sm font-bold leading-6 text-ink/[0.58];
   }
 
   .teacher-import-modal-icon {
-    @apply grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-blush-100 shadow-sm;
+    @apply grid h-[72px] w-[72px] shrink-0 place-items-center rounded-[24px] border-4 border-white bg-blush-100 shadow-sm;
     color: var(--rose);
+    box-shadow: 0 18px 30px rgb(var(--rose-rgb) / 0.14);
   }
 
   .teacher-import-modal-icon::before {
     content: "";
     display: block;
-    width: 32px;
-    height: 32px;
+    width: 38px;
+    height: 38px;
     background: currentColor;
     mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 8h23l9 9v23H8V8Zm21 3v9h9l-9-9ZM15 28h18v4H15v-4Zm0 7h18v4H15v-4Zm0-14h10v4H15v-4Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .teacher-import-modal-count {
+    @apply hidden min-w-32 rounded-[24px] border border-white bg-white/[0.78] px-5 py-4 text-center shadow-sm md:grid;
+  }
+
+  .teacher-import-modal-count strong {
+    @apply text-4xl font-black leading-none text-leaf-700;
+  }
+
+  .teacher-import-modal-count span {
+    @apply mt-1 text-xs font-black text-ink/[0.5];
   }
 
   .teacher-import-modal-close {
@@ -2287,11 +2351,11 @@
   }
 
   .teacher-import-modal-body {
-    @apply min-h-52 overflow-hidden;
+    @apply relative z-10 min-h-56 overflow-hidden rounded-[28px] border border-white/80 bg-white/[0.54] p-2 shadow-sm;
   }
 
   .teacher-import-loading {
-    @apply min-h-52 place-items-center gap-3 rounded-[24px] bg-mint-50/80 p-8 text-center text-ink/70;
+    @apply min-h-60 place-items-center gap-4 rounded-[24px] bg-mint-50/80 p-8 text-center text-ink/70;
   }
 
   .teacher-import-loading:not([hidden]) {
@@ -2299,40 +2363,61 @@
   }
 
   .teacher-import-loading span {
-    @apply h-12 w-12 rounded-full border-4 border-mint-200 border-t-leaf-500;
+    @apply h-14 w-14 rounded-full border-4 border-mint-200 border-t-leaf-500;
     animation: loader-halo-spin 900ms linear infinite;
   }
 
   .teacher-import-loading strong {
-    @apply text-sm font-black;
+    @apply block text-base font-black;
+  }
+
+  .teacher-import-loading small {
+    @apply mt-1 block text-xs font-bold text-ink/[0.5];
   }
 
   .teacher-import-error {
-    @apply rounded-[24px] bg-blush-100/80 p-5 text-sm font-black leading-6 text-rose-700;
+    @apply rounded-[24px] border border-white bg-blush-100/80 p-5 text-sm font-black leading-6 text-rose-700 shadow-sm;
   }
 
   .teacher-import-preview-table {
-    @apply max-h-[430px] overflow-auto rounded-[24px] border-0 bg-white/70 shadow-sm;
+    @apply max-h-[480px] overflow-auto rounded-[24px] border-0 bg-transparent shadow-none;
   }
 
   .teacher-import-preview-table table {
-    @apply w-full min-w-[720px] border-collapse text-left text-sm;
+    @apply w-full min-w-[760px] border-separate border-spacing-y-2 text-left text-sm;
   }
 
   .teacher-import-preview-table th {
-    @apply sticky top-0 bg-mint-100 px-4 py-3 text-xs font-black uppercase text-ink/55;
+    @apply sticky top-0 z-10 bg-mint-100/95 px-4 py-3 text-xs font-black uppercase text-ink/[0.55] first:rounded-l-[18px] last:rounded-r-[18px];
   }
 
   .teacher-import-preview-table td {
-    @apply border-t border-leaf-500/10 px-4 py-3 font-bold text-ink/70;
+    @apply bg-white/[0.86] px-4 py-4 font-bold text-ink/70 shadow-sm first:rounded-l-[18px] last:rounded-r-[18px];
+  }
+
+  .import-row-index {
+    @apply grid h-9 w-9 place-items-center rounded-2xl bg-mint-50 text-xs font-black text-leaf-700;
+  }
+
+  .import-ready-chip {
+    @apply inline-flex rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
   }
 
   .teacher-import-modal-actions {
-    @apply flex flex-col-reverse gap-3 border-t border-white/80 pt-4 sm:flex-row sm:justify-end;
+    @apply relative z-10 flex flex-col-reverse gap-3 border-t border-white/80 pt-4 sm:flex-row sm:justify-end;
   }
 
   .teacher-import-modal-actions .btn {
-    @apply w-full sm:w-auto;
+    @apply min-h-12 w-full sm:w-auto;
+  }
+
+  .teacher-import-secondary-action {
+    @apply bg-white/85 text-ink/[0.68] shadow-sm hover:-translate-y-0.5;
+  }
+
+  .teacher-import-primary-action {
+    @apply px-6;
+    box-shadow: 0 18px 30px rgb(var(--rose-rgb) / 0.16);
   }
 
   .dashboard-header,
@@ -2386,15 +2471,15 @@
   }
 
   .student-table {
-    @apply w-full min-w-[1060px] border-collapse text-left text-sm;
+    @apply w-full min-w-[920px] border-separate border-spacing-0 text-left text-sm;
   }
 
   .student-table th {
-    @apply bg-mint-100/90 px-4 py-3 text-xs font-black uppercase text-ink/60;
+    @apply bg-mint-100/90 px-4 py-3 text-xs font-black uppercase text-ink/[0.58] first:rounded-l-[18px] last:rounded-r-[18px];
   }
 
   .student-table td {
-    @apply border-t border-leaf-500/10 px-4 py-3 align-middle;
+    @apply border-b border-leaf-500/10 bg-white/[0.72] px-4 py-3 align-middle first:rounded-l-[18px] last:rounded-r-[18px];
   }
 
   .student-table tr {
@@ -2402,7 +2487,15 @@
   }
 
   .student-table tbody tr:hover {
+    @apply shadow-sm;
+  }
+
+  .student-table tbody tr:hover td {
     @apply bg-mint-50;
+  }
+
+  .student-name-cell {
+    @apply max-w-[260px] font-black leading-6 text-ink;
   }
 
   .drop-count {
@@ -2418,8 +2511,13 @@
   }
 
   .soft-pill,
-  .range-chip {
+  .range-chip,
+  .classroom-pill {
     @apply inline-flex rounded-full bg-mint-100 px-3 py-1 text-xs font-black text-leaf-700 shadow-sm;
+  }
+
+  .classroom-pill {
+    @apply bg-water/15 text-ink/70;
   }
 
   .drop-action-form {
@@ -4121,13 +4219,8 @@
     @apply p-0;
   }
 
-  .teacher-filter-form {
-    @apply w-full;
-  }
-
-  .teacher-filter-form input,
-  .teacher-filter-form select {
-    @apply w-full;
+  .teacher-table-toolbar {
+    @apply mx-4;
   }
 
   .hero-copy h1,
