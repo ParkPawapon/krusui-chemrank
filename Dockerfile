@@ -50,7 +50,7 @@ USER www-data
 
 CMD ["php-fpm", "-F"]
 
-FROM nginx:1.27-alpine AS nginx-runtime
+FROM nginx:1.31.1-alpine AS nginx-runtime
 
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY public /var/www/html/public
