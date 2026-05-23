@@ -4,6 +4,8 @@
   const now = Date.now();
   const cooldownMs = 5 * 60 * 1000;
   const storageKey = 'chemrank:last-loader-shown-at';
+  const logoPreload = document.querySelector('link[rel="preload"][as="image"][href*="chem-rank-loader"]');
+  const logoUrl = logoPreload?.href || '/assets/brand/chem-rank-loader.webp';
   const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const readLastShownAt = () => {
@@ -27,10 +29,50 @@
     return;
   }
 
-  markShown();
-  root.classList.add('has-page-loader');
-
   let hidden = false;
+  let visible = false;
+  let hideRequested = false;
+  let visibleAt = startedAt;
+
+  const waitForLogo = () => new Promise((resolve) => {
+    if (!logoUrl) {
+      resolve();
+      return;
+    }
+
+    const image = new Image();
+    let settled = false;
+
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeout);
+      resolve();
+    };
+
+    const timeout = window.setTimeout(finish, 1200);
+    image.decoding = 'sync';
+    image.fetchPriority = 'high';
+    image.onload = finish;
+    image.onerror = finish;
+    image.src = logoUrl;
+
+    if (image.complete && image.naturalWidth > 0) {
+      finish();
+    }
+  });
+
+  const showLoader = () => {
+    if (hidden || visible) return;
+    visible = true;
+    visibleAt = window.performance?.now?.() ?? Date.now();
+    markShown();
+    root.classList.add('has-page-loader');
+
+    if (hideRequested) {
+      queueHide();
+    }
+  };
 
   const hideLoader = () => {
     if (hidden) return;
@@ -55,12 +97,17 @@
   };
 
   const queueHide = () => {
+    hideRequested = true;
+    if (!visible) return;
+
     const now = window.performance?.now?.() ?? Date.now();
     const minVisibleMs = reducedMotion() ? 120 : 760;
-    const wait = Math.max(0, minVisibleMs - (now - startedAt));
+    const wait = Math.max(0, minVisibleMs - (now - visibleAt));
 
     window.setTimeout(hideLoader, wait);
   };
+
+  waitForLogo().then(showLoader);
 
   if (document.readyState === 'complete') {
     queueHide();

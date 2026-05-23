@@ -4,7 +4,7 @@
 <section class="landing-hero page-band">
     <div class="hero-copy">
         <div class="hero-game-logo">
-            <img class="hero-brand-logo" src="<?= e(asset('brand/chem-rank.svg')) ?>" alt="โลโก้ระบบเก็บหยดสาร" loading="eager" decoding="async">
+            <img class="hero-brand-logo" src="<?= e(asset('brand/chem-rank-loader.webp')) ?>" width="1245" height="300" alt="โลโก้ระบบเก็บหยดสาร" loading="eager" decoding="async" fetchpriority="high">
         </div>
         <div class="hero-actions">
             <a class="btn btn-primary" href="<?= e(url('/login?role=student')) ?>">นักเรียนเข้าสู่ระบบ</a>
