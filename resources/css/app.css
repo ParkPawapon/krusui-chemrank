@@ -1427,131 +1427,232 @@
   }
 
   .student-minimal-shell {
-    @apply w-full max-w-5xl overflow-hidden rounded-[34px] border border-white/90 bg-white/[0.88] p-5 shadow-soft backdrop-blur md:p-8;
+    @apply relative w-full max-w-5xl overflow-hidden rounded-[34px] border border-white/90 bg-white/[0.9] p-5 shadow-soft backdrop-blur md:p-8;
     background:
-      radial-gradient(circle at 12% 14%, rgb(var(--mint-rgb) / 0.22), transparent 30%),
-      radial-gradient(circle at 86% 18%, color-mix(in srgb, var(--rank-color) 18%, transparent), transparent 30%),
+      radial-gradient(circle at 11% 18%, rgb(var(--mint-rgb) / 0.2), transparent 30%),
+      radial-gradient(circle at 88% 8%, color-mix(in srgb, var(--rank-color) 20%, white), transparent 34%),
       linear-gradient(135deg, rgb(255 255 255 / 0.94), rgb(var(--paper-rgb) / 0.82));
     box-shadow: var(--shadow-pop);
     animation: component-card-in 560ms cubic-bezier(0.2, 0.85, 0.24, 1.08) both;
   }
 
+  .student-minimal-shell::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgb(255 255 255 / 0.68);
+    border-radius: 28px;
+    pointer-events: none;
+  }
+
+  .student-minimal-shell::after {
+    content: "";
+    position: absolute;
+    inset: auto -12% -38% 48%;
+    height: 320px;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgb(var(--sky-rgb) / 0.2), transparent 66%);
+    pointer-events: none;
+  }
+
+  .student-soft-dot {
+    position: absolute;
+    z-index: 1;
+    width: 42px;
+    height: 42px;
+    border: 3px solid rgb(255 255 255 / 0.82);
+    border-radius: 18px 18px 22px 22px;
+    background: color-mix(in srgb, var(--rank-color) 26%, white);
+    opacity: 0.48;
+    box-shadow: inset 0 0 0 5px rgb(255 255 255 / 0.36), 0 14px 28px rgb(var(--mint-rgb) / 0.16);
+    transform: rotate(45deg);
+    animation: student-soft-drift 4.2s ease-in-out infinite alternate;
+  }
+
+  .student-soft-dot-a {
+    right: 68px;
+    top: 42px;
+  }
+
+  .student-soft-dot-b {
+    bottom: 76px;
+    left: 48px;
+    width: 30px;
+    height: 30px;
+    background: rgb(var(--sky-rgb) / 0.26);
+    animation-delay: 0.55s;
+  }
+
   .student-minimal-header {
-    @apply flex min-h-28 flex-col justify-between gap-4 border-b border-white/80 pb-7 pt-2 md:min-h-32 md:flex-row md:items-end md:pb-8 md:pt-3;
+    @apply relative z-10 flex min-h-36 flex-col justify-between gap-5 border-b border-white/75 pb-6 pt-3 md:min-h-40 md:flex-row md:items-center md:pb-7 md:pt-4;
+  }
+
+  .student-header-copy {
+    @apply min-w-0;
   }
 
   .student-minimal-eyebrow,
   .student-card-kicker {
-    @apply text-xs font-black uppercase leading-6 text-ink/[0.48];
+    @apply text-xs font-black uppercase leading-6 tracking-[0.08em] text-ink/[0.48];
   }
 
   .student-minimal-header h1 {
-    @apply mt-1 text-3xl font-black leading-tight text-ink md:text-5xl;
+    @apply mt-1 max-w-3xl text-3xl font-black leading-tight text-ink md:text-5xl;
   }
 
   .student-minimal-meta {
-    @apply flex flex-wrap gap-2;
+    @apply mt-4 flex flex-wrap gap-2;
   }
 
   .student-minimal-meta span {
-    @apply rounded-full border border-white bg-mint-100/80 px-4 py-2 text-sm font-black text-leaf-700 shadow-sm;
+    @apply rounded-full border border-white bg-white/[0.72] px-4 py-2 text-sm font-black text-leaf-700 shadow-sm;
   }
 
-  .student-minimal-grid {
-    @apply grid gap-4 pt-5 lg:grid-cols-[1.05fr_0.95fr];
+  .student-drops-pill {
+    @apply inline-flex w-fit items-center gap-4 rounded-[26px] border border-white bg-white/[0.84] px-5 py-4 shadow-sm;
   }
 
-  .student-level-card {
-    @apply relative overflow-hidden rounded-[28px] border border-white/90 bg-white/[0.78] p-5 shadow-soft md:p-6;
+  .student-drops-pill span {
+    @apply text-sm font-black leading-5 text-ink/[0.56];
+  }
+
+  .student-drops-pill strong {
+    @apply text-5xl font-black leading-none text-leaf-700;
+  }
+
+  .student-rank-stage {
+    @apply relative z-10 grid gap-4 pt-5 lg:grid-cols-[minmax(0,1fr)_340px];
+  }
+
+  .student-current-rank,
+  .student-next-rank-card {
+    @apply relative overflow-hidden rounded-[30px] border border-white/90 bg-white/[0.74] shadow-soft;
     animation: component-rise-in 540ms ease both;
   }
 
-  .student-level-card::before {
+  .student-current-rank {
+    @apply grid gap-5 p-5 md:grid-cols-[190px_minmax(0,1fr)] md:items-center md:p-7;
+    background:
+      radial-gradient(circle at 18% 18%, color-mix(in srgb, var(--rank-color) 28%, white), transparent 38%),
+      radial-gradient(circle at 92% 8%, rgb(var(--gold-rgb) / 0.14), transparent 26%),
+      linear-gradient(135deg, rgb(255 255 255 / 0.88), rgb(var(--mint-soft-rgb) / 0.46));
+  }
+
+  .student-current-rank::before {
     content: "";
     position: absolute;
-    inset: 0;
+    inset: auto -28px -46px auto;
+    width: 168px;
+    height: 168px;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle, rgb(255 255 255 / 0.48), transparent 54%),
+      color-mix(in srgb, var(--rank-color) 14%, transparent);
     pointer-events: none;
-    background: linear-gradient(115deg, transparent 0 46%, rgb(255 255 255 / 0.34) 52%, transparent 60%);
-    transform: translateX(-120%) skewX(-14deg);
-    animation: component-soft-sheen 5.2s ease-in-out 900ms infinite;
   }
 
-  .student-level-card > * {
-    @apply relative z-10;
-  }
-
-  .current-level-card {
+  .student-next-rank-card {
+    @apply p-5;
     background:
-      radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--rank-color) 22%, white), transparent 34%),
-      linear-gradient(135deg, rgb(255 255 255 / 0.88), rgb(var(--mint-soft-rgb) / 0.48));
-  }
-
-  .next-level-card {
-    background:
-      radial-gradient(circle at 90% 10%, rgb(var(--gold-rgb) / 0.18), transparent 32%),
-      linear-gradient(135deg, rgb(255 255 255 / 0.9), rgb(var(--paper-rgb) / 0.66));
+      radial-gradient(circle at 88% 12%, rgb(var(--gold-rgb) / 0.2), transparent 34%),
+      linear-gradient(135deg, rgb(255 255 255 / 0.9), rgb(var(--paper-rgb) / 0.72));
     animation-delay: 100ms;
   }
 
-  .student-level-main {
-    @apply mt-4 grid gap-5 sm:grid-cols-[132px_minmax(0,1fr)] sm:items-center;
-  }
-
   .student-level-icon {
-    @apply grid h-32 w-32 place-items-center rounded-[26px] border border-white bg-white/[0.82] shadow-sm;
+    @apply grid place-items-center border border-white bg-white/[0.82] shadow-sm;
     background:
       radial-gradient(circle at 34% 24%, rgb(255 255 255 / 0.94), transparent 32%),
       color-mix(in srgb, var(--rank-color) 16%, white);
   }
 
-  .student-level-icon img {
-    @apply h-24 w-24;
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
-    filter: drop-shadow(0 10px 0 rgb(var(--ink-rgb) / 0.07));
+  .student-current-icon {
+    @apply h-44 w-44 rounded-[32px];
+    animation: student-icon-float 3.8s ease-in-out 500ms infinite alternate;
   }
 
-  .student-level-icon-next {
-    @apply h-28 w-28;
+  .student-current-icon img {
+    @apply h-36 w-36;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    filter: drop-shadow(0 16px 0 rgb(var(--ink-rgb) / 0.06));
+  }
+
+  .student-current-copy {
+    @apply relative min-w-0;
+  }
+
+  .student-current-copy h2 {
+    @apply mt-1 text-4xl font-black leading-tight text-ink md:text-5xl;
+  }
+
+  .student-current-copy p {
+    @apply mt-3 max-w-xl text-base font-semibold leading-7 text-ink/[0.66];
+  }
+
+  .student-next-head {
+    @apply relative z-10 flex items-start justify-between gap-3;
+  }
+
+  .student-next-head strong {
+    @apply max-w-[11rem] rounded-full bg-gold/35 px-4 py-2 text-right text-sm font-black leading-5 text-ink;
+  }
+
+  .student-next-preview {
+    @apply relative z-10 mt-5 grid grid-cols-[86px_minmax(0,1fr)] items-center gap-4;
+  }
+
+  .student-next-icon {
+    @apply grid h-[86px] w-[86px] place-items-center rounded-[24px] border border-white bg-white/[0.82] shadow-sm;
     background:
       radial-gradient(circle at 34% 24%, rgb(255 255 255 / 0.94), transparent 32%),
       rgb(var(--gold-soft-rgb) / 0.7);
   }
 
-  .student-level-icon-next img {
-    @apply h-20 w-20;
+  .student-next-icon img {
+    @apply h-16 w-16;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 0 rgb(var(--ink-rgb) / 0.05));
   }
 
-  .student-level-card h2 {
-    @apply text-3xl font-black leading-tight text-ink md:text-4xl;
+  .student-next-preview h3 {
+    @apply text-2xl font-black leading-tight text-ink;
   }
 
-  .student-level-card p {
-    @apply mt-2 max-w-xl text-base font-medium leading-7 text-ink/[0.66];
-  }
-
-  .student-drops-pill {
-    @apply mt-6 inline-flex items-end gap-2 rounded-full bg-white/[0.88] px-5 py-3 shadow-sm;
-  }
-
-  .student-drops-pill strong {
-    @apply text-4xl font-black leading-none text-leaf-700;
-  }
-
-  .student-drops-pill span {
-    @apply pb-1 text-sm font-black text-ink/[0.58];
-  }
-
-  .student-next-head {
-    @apply flex items-center justify-between gap-3;
-  }
-
-  .student-next-head strong {
-    @apply rounded-full bg-gold/35 px-4 py-2 text-sm font-black text-ink;
+  .student-next-preview p {
+    @apply mt-1 text-sm font-semibold leading-6 text-ink/[0.62];
   }
 
   .student-minimal-progress {
-    @apply mt-6 grid gap-3 rounded-[22px] border border-white/80 bg-white/[0.72] p-4;
+    @apply relative z-10 mt-4 grid gap-3 rounded-[28px] border border-white/85 bg-white/[0.78] p-5 shadow-sm;
+    animation: component-card-in 560ms cubic-bezier(0.2, 0.85, 0.24, 1.08) 160ms both;
+  }
+
+  .student-minimal .student-progress-head {
+    @apply flex items-center justify-between gap-3;
+  }
+
+  .student-minimal .student-progress-head span {
+    @apply text-sm font-black text-ink/[0.52];
+  }
+
+  .student-minimal .student-progress-head strong {
+    @apply text-lg font-black text-leaf-700;
+  }
+
+  .student-minimal-progress p {
+    @apply text-sm font-bold leading-6 text-ink/[0.58];
+  }
+
+  .student-wide-progress {
+    @apply h-4 border border-white bg-white/[0.86];
+  }
+
+  .student-wide-progress span {
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--rank-color) 70%, var(--mint)), rgb(var(--gold-rgb) / 0.88));
+    box-shadow: inset 0 -3px 0 rgb(255 255 255 / 0.26), 0 8px 18px color-mix(in srgb, var(--rank-color) 18%, transparent);
   }
 
   .test-tube {
@@ -3825,6 +3926,24 @@
   }
 }
 
+@keyframes student-icon-float {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+  to {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes student-soft-drift {
+  from {
+    transform: translateY(0) rotate(45deg) scale(1);
+  }
+  to {
+    transform: translateY(-12px) rotate(45deg) scale(1.06);
+  }
+}
+
 @keyframes leaderboard-panel-in {
   from {
     opacity: 0;
@@ -4353,6 +4472,94 @@
 
   .student-rank-path {
     @apply rounded-[26px];
+  }
+
+  .student-minimal {
+    @apply min-h-0 pb-10;
+  }
+
+  .student-minimal-shell {
+    @apply rounded-[30px] p-4;
+  }
+
+  .student-minimal-shell::before {
+    inset: 10px;
+    border-radius: 24px;
+  }
+
+  .student-soft-dot-a {
+    right: 28px;
+    top: 30px;
+  }
+
+  .student-soft-dot-b {
+    bottom: 42px;
+    left: 26px;
+  }
+
+  .student-minimal-header {
+    @apply min-h-[220px] pb-5 pt-5;
+  }
+
+  .student-minimal-header h1 {
+    @apply text-3xl;
+  }
+
+  .student-minimal-meta span {
+    @apply w-full justify-center text-center;
+  }
+
+  .student-drops-pill {
+    @apply w-full justify-between rounded-[24px] px-4;
+  }
+
+  .student-drops-pill strong {
+    @apply text-4xl;
+  }
+
+  .student-rank-stage {
+    @apply pt-4;
+  }
+
+  .student-current-rank,
+  .student-next-rank-card {
+    @apply rounded-[26px] p-4;
+  }
+
+  .student-current-rank {
+    @apply text-center;
+  }
+
+  .student-current-icon {
+    @apply mx-auto h-36 w-36 rounded-[26px];
+  }
+
+  .student-current-icon img {
+    @apply h-28 w-28;
+  }
+
+  .student-current-copy h2 {
+    @apply text-3xl;
+  }
+
+  .student-next-preview {
+    @apply grid-cols-[72px_minmax(0,1fr)] gap-3;
+  }
+
+  .student-next-icon {
+    @apply h-[72px] w-[72px] rounded-[20px];
+  }
+
+  .student-next-icon img {
+    @apply h-14 w-14;
+  }
+
+  .student-next-head strong {
+    @apply max-w-[9rem] px-3 text-xs;
+  }
+
+  .student-minimal-progress {
+    @apply rounded-[24px] p-4;
   }
 
   .leaderboard-hero-visual {

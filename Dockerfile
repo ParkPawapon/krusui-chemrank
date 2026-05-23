@@ -18,9 +18,8 @@ WORKDIR /var/www/html
 RUN apk add --no-cache libzip \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
-        oniguruma-dev \
         libzip-dev \
-    && docker-php-ext-install -j"$(nproc)" mbstring opcache pdo_mysql zip \
+    && docker-php-ext-install -j"$(nproc)" pdo_mysql zip \
     && apk del .build-deps
 
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/chemrank-production.ini
