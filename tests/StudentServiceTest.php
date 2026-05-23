@@ -39,6 +39,11 @@ assert_same('ม.4/1', $student->className, 'Class display should be derived fro
 assert_same($academicYear->name, $student->academicYearName, 'Student should keep academic year context');
 assert_true($users->findByUsername('12345') !== null, 'Student account should use student number as login identifier');
 
+$numericClassStudent = $service->createStudent('เด็กเลข', '12346', '4', '02', $academicYear->id, 'secure-password', $teacher->id);
+assert_same('ม.4', $numericClassStudent->classLevel, 'Numeric class input should be normalized for display');
+assert_same('2', $numericClassStudent->room, 'Numeric room input should be normalized');
+assert_same('ม.4/2', $numericClassStudent->className, 'Normalized class and room should render as a classroom');
+
 try {
     $service->createStudent('เลขผิด', '1234A', 'ม.4', '1', $academicYear->id, 'secure-password', $teacher->id);
     throw new RuntimeException('Invalid student number should fail validation');
@@ -64,7 +69,7 @@ $count = (int) $pdo->query('SELECT COUNT(*) FROM drop_transactions')->fetchColum
 assert_same(2, $count, 'Every drop adjustment should be logged');
 
 $activityLogCount = (int) $pdo->query('SELECT COUNT(*) FROM activity_logs')->fetchColumn();
-assert_same(3, $activityLogCount, 'Student creation and every drop adjustment should write activity logs');
+assert_same(4, $activityLogCount, 'Student creation and every drop adjustment should write activity logs');
 
 try {
     $service->adjustDrops($student->id, $teacher->id, 0, 'add', null);

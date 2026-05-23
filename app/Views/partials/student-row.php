@@ -3,14 +3,21 @@
 /** @var \Domain\Rank\RankRegistry $ranks */
 /** @var \App\Services\CsrfTokenManager $csrf */
 $rank = $ranks->forDrops($student->drops);
-$classroom = trim($student->classLevel . '/' . $student->room, '/');
+$classroom = $student->className;
 ?>
 <tr data-student-row data-student-id="<?= e((string) $student->id) ?>" data-rank-level="<?= e((string) $rank->level) ?>">
-    <td><span class="soft-pill"><?= e($student->studentNumber) ?></span></td>
-    <td class="student-name-cell"><?= e($student->fullName) ?></td>
+    <td><span class="soft-pill student-number-pill"><?= e($student->studentNumber) ?></span></td>
+    <td class="student-name-cell">
+        <span class="student-identity">
+            <span class="student-avatar" aria-hidden="true"></span>
+            <span>
+                <strong><?= e($student->fullName) ?></strong>
+                <small>นักเรียน</small>
+            </span>
+        </span>
+    </td>
     <td><span class="classroom-pill"><?= e($classroom) ?></span></td>
-    <td><?= e($student->academicYearName) ?></td>
-    <td data-rank-cell>
+    <td class="teacher-rank-cell" data-rank-cell>
         <?= \App\Support\View::partial('partials/rank-badge', ['rank' => $rank, 'size' => 'sm']) ?>
     </td>
     <td>
@@ -33,7 +40,7 @@ $classroom = trim($student->classLevel . '/' . $student->room, '/');
             </button>
         </form>
     </td>
-    <td class="text-right">
+    <td class="teacher-table-actions">
         <form action="<?= e(url('/teacher/students/delete')) ?>" method="post" data-confirm="ลบนักเรียนคนนี้หรือไม่?">
             <?= $csrf->field() ?>
             <input type="hidden" name="student_id" value="<?= e((string) $student->id) ?>">

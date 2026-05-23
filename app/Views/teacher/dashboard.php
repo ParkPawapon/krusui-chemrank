@@ -7,9 +7,6 @@
 /** @var string $search */
 /** @var \Domain\Rank\RankRegistry $ranks */
 /** @var \App\Services\CsrfTokenManager $csrf */
-$totalStudents = count($students);
-$totalDrops = array_sum(array_map(static fn ($student): int => $student->drops, $students));
-$averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) : 0;
 ?>
 <section class="teacher-dashboard page-band">
     <section class="teacher-hero">
@@ -47,7 +44,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 <?= $csrf->field() ?>
                 <label>
                     <span>ชื่อนักเรียน</span>
-                    <input name="full_name" type="text" required maxlength="160" autocomplete="name">
+                    <input name="full_name" type="text" required maxlength="160" autocomplete="name" placeholder="เช่น นายทดสอบ เคมี">
                 </label>
                 <label>
                     <span>เลขประจำตัวนักเรียน</span>
@@ -55,11 +52,11 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 </label>
                 <label>
                     <span>ชั้น</span>
-                    <input name="class_level" type="text" required maxlength="20" placeholder="เช่น ม.4">
+                    <input name="class_level" type="text" required inputmode="numeric" pattern="\d{1,2}" maxlength="2" autocomplete="off" placeholder="เช่น 4">
                 </label>
                 <label>
                     <span>ห้อง</span>
-                    <input name="room" type="text" required maxlength="20" placeholder="เช่น 1">
+                    <input name="room" type="text" required inputmode="numeric" pattern="\d{1,2}" maxlength="2" autocomplete="off" placeholder="เช่น 1">
                 </label>
                 <label class="teacher-academic-field">
                     <span>ปีการศึกษา</span>
@@ -122,10 +119,6 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
         <div class="teacher-table-head">
             <div class="teacher-table-title-block">
                 <h2>รายชื่อนักเรียน</h2>
-                <div class="teacher-table-summary" aria-label="ภาพรวมรายชื่อ">
-                    <span>ปีการศึกษาปัจจุบัน <?= e($activeAcademicYear->name) ?></span>
-                    <span>ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</span>
-                </div>
             </div>
         </div>
 
@@ -154,17 +147,16 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                         <th>เลขประจำตัว</th>
                         <th>ชื่อจริง - นามสกุล</th>
                         <th>ห้องเรียน</th>
-                        <th>ปีการศึกษา</th>
                         <th>Rank</th>
                         <th>หยดสาร</th>
                         <th>ปรับหยด</th>
-                        <th></th>
+                        <th>จัดการ</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (!$students): ?>
                         <tr>
-                            <td colspan="8">
+                            <td colspan="7">
                                 <div class="table-empty">ยังไม่มีนักเรียนในรายการ</div>
                             </td>
                         </tr>
