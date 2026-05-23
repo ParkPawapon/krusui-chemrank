@@ -1,0 +1,13 @@
+.git
+.env
+.env.*
+node_modules
+storage/database.sqlite
+storage/*.sqlite
+storage/logs/*.log
+storage/rate-limit/*.json
+tests
+coverage
+npm-debug.log*
+.DS_Store
+
