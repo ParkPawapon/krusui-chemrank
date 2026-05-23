@@ -52,13 +52,8 @@ final class StudentService
             throw new \InvalidArgumentException('เลขประจำตัวนักเรียนต้องเป็นตัวเลข 5 หลัก');
         }
 
-        if ($classLevel === '' || mb_strlen($classLevel) > 20) {
-            throw new \InvalidArgumentException('กรุณากรอกชั้นเรียนให้ถูกต้อง');
-        }
-
-        if ($room === '' || mb_strlen($room) > 20) {
-            throw new \InvalidArgumentException('กรุณากรอกห้องเรียนให้ถูกต้อง');
-        }
+        $classLevel = $this->normalizeClassLevel($classLevel);
+        $room = $this->normalizeRoom($room);
 
         if ($password === '' || mb_strlen($password) < 8) {
             throw new \InvalidArgumentException('รหัสผ่านนักเรียนต้องมีอย่างน้อย 8 ตัวอักษร');
@@ -90,6 +85,41 @@ final class StudentService
             $this->pdo->rollBack();
             throw $exception;
         }
+    }
+
+    private function normalizeClassLevel(string $classLevel): string
+    {
+        $classLevel = trim($classLevel);
+
+        if (preg_match('/^\d{1,2}$/', $classLevel)) {
+            $number = (int) $classLevel;
+            if ($number >= 1) {
+                return 'ม.' . $number;
+            }
+        }
+
+        if (preg_match('/^ม\.(\d{1,2})$/u', $classLevel, $matches)) {
+            $number = (int) $matches[1];
+            if ($number >= 1) {
+                return 'ม.' . $number;
+            }
+        }
+
+        throw new \InvalidArgumentException('ชั้นเรียนต้องเป็นตัวเลข เช่น 4');
+    }
+
+    private function normalizeRoom(string $room): string
+    {
+        $room = trim($room);
+
+        if (preg_match('/^\d{1,2}$/', $room)) {
+            $number = (int) $room;
+            if ($number >= 1) {
+                return (string) $number;
+            }
+        }
+
+        throw new \InvalidArgumentException('ห้องเรียนต้องเป็นตัวเลข เช่น 1');
     }
 
     public function adjustDrops(int $studentId, int $teacherId, int $amount, string $type, ?string $reason): DropAdjustmentResult
