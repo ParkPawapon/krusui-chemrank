@@ -69,7 +69,7 @@ $navItems = match ($currentRole) {
     <link rel="icon" type="image/png" sizes="32x32" href="<?= e(asset('brand/favicon-32x32.png')) ?>">
     <link rel="icon" type="image/png" sizes="192x192" href="<?= e(asset('brand/favicon-192x192.png')) ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="<?= e(asset('brand/apple-touch-icon.png')) ?>">
-    <link rel="preload" as="image" type="image/svg+xml" href="<?= e(asset('brand/chem-rank.svg')) ?>" fetchpriority="high">
+    <link rel="preload" as="image" type="image/webp" href="<?= e(asset('brand/chem-rank-loader.webp')) ?>" fetchpriority="high">
     <title><?= e($rawTitle) ?></title>
     <script src="<?= e(asset('js/loader-boot.js')) ?>"></script>
     <link rel="stylesheet" href="<?= e(asset('css/app.css')) ?>">
@@ -83,7 +83,7 @@ $navItems = match ($currentRole) {
             <span class="page-loader-drop page-loader-drop-a" aria-hidden="true"></span>
             <span class="page-loader-drop page-loader-drop-b" aria-hidden="true"></span>
             <span class="page-loader-drop page-loader-drop-c" aria-hidden="true"></span>
-            <img class="page-loader-logo" src="<?= e(asset('brand/chem-rank.svg')) ?>" alt="" loading="eager" decoding="sync" fetchpriority="high">
+            <img class="page-loader-logo" src="<?= e(asset('brand/chem-rank-loader.webp')) ?>" width="1245" height="300" alt="" loading="eager" decoding="sync" fetchpriority="high">
             <div class="page-loader-bar" aria-hidden="true"><span></span></div>
             <p>กำลังเตรียมห้องทดลอง</p>
         </div>

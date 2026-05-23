@@ -115,14 +115,12 @@
         </section>
     </div>
 
-    <section class="teacher-table-card" data-teacher-results aria-live="polite">
-        <div class="teacher-table-head">
+    <section class="teacher-roster-area" data-teacher-results aria-live="polite">
+        <div class="teacher-roster-top">
             <div class="teacher-table-title-block">
                 <h2>รายชื่อนักเรียน</h2>
             </div>
-        </div>
 
-        <div class="teacher-table-toolbar">
             <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form" data-teacher-filter-form>
                 <label>
                     <span class="teacher-filter-label">ค้นหานักเรียน</span>
@@ -140,32 +138,34 @@
             </form>
         </div>
 
-        <div class="teacher-table-scroll">
-            <table class="student-table">
-                <thead>
-                    <tr>
-                        <th>เลขประจำตัว</th>
-                        <th>ชื่อจริง - นามสกุล</th>
-                        <th>ห้องเรียน</th>
-                        <th>Rank</th>
-                        <th>หยดสาร</th>
-                        <th>ปรับหยด</th>
-                        <th>จัดการ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!$students): ?>
+        <div class="teacher-table-card">
+            <div class="teacher-table-scroll">
+                <table class="student-table">
+                    <thead>
                         <tr>
-                            <td colspan="7">
-                                <div class="table-empty">ยังไม่มีนักเรียนในรายการ</div>
-                            </td>
+                            <th>เลขประจำตัว</th>
+                            <th>ชื่อจริง - นามสกุล</th>
+                            <th>ห้องเรียน</th>
+                            <th>Rank</th>
+                            <th>หยดสาร</th>
+                            <th>ปรับหยด</th>
+                            <th>จัดการ</th>
                         </tr>
-                    <?php endif; ?>
-                    <?php foreach ($students as $student): ?>
-                        <?= \App\Support\View::partial('partials/student-row', ['student' => $student, 'ranks' => $ranks, 'csrf' => $csrf]) ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php if (!$students): ?>
+                            <tr>
+                                <td colspan="7">
+                                    <div class="table-empty">ยังไม่มีนักเรียนในรายการ</div>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                        <?php foreach ($students as $student): ?>
+                            <?= \App\Support\View::partial('partials/student-row', ['student' => $student, 'ranks' => $ranks, 'csrf' => $csrf]) ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
