@@ -107,6 +107,28 @@ final class TeacherController
         Response::redirect('/teacher#teacher-import');
     }
 
+    public function previewImport(Request $request): never
+    {
+        try {
+            $rows = $this->studentImportService->preview($request->file('student_file'));
+
+            Response::json([
+                'ok' => true,
+                'rows' => array_map(static fn (array $row): array => [
+                    'row' => $row['row'],
+                    'studentNumber' => $row['student_number'],
+                    'fullName' => $row['full_name'],
+                    'classLevel' => $row['class_level'],
+                    'room' => $row['room'],
+                ], $rows),
+            ]);
+        } catch (\InvalidArgumentException $exception) {
+            Response::json(['ok' => false, 'message' => $exception->getMessage()], 422);
+        } catch (\Throwable) {
+            Response::json(['ok' => false, 'message' => 'ไม่สามารถอ่านไฟล์รายชื่อได้ กรุณาลองใหม่'], 500);
+        }
+    }
+
     public function adjustDrops(Request $request): never
     {
         $user = $this->auth->currentUser();

@@ -85,11 +85,18 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                 <span class="teacher-panel-icon teacher-panel-icon-upload" aria-hidden="true"></span>
             </div>
 
-            <form action="<?= e(url('/teacher/students/import')) ?>" method="post" enctype="multipart/form-data" class="teacher-import-form">
+            <form
+                action="<?= e(url('/teacher/students/import')) ?>"
+                method="post"
+                enctype="multipart/form-data"
+                class="teacher-import-form"
+                data-import-form
+                data-import-preview-url="<?= e(url('/teacher/students/import-preview')) ?>"
+            >
                 <?= $csrf->field() ?>
                 <label class="teacher-upload-box">
                     <span>ไฟล์รายชื่อนักเรียน</span>
-                    <input name="student_file" type="file" required accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+                    <input name="student_file" type="file" required accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" data-import-file>
                     <small>ขนาดไฟล์ไม่เกิน 5 MB</small>
                 </label>
                 <div class="teacher-import-bottom">
@@ -103,7 +110,6 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                             <?php endforeach; ?>
                         </select>
                     </label>
-                    <button class="btn btn-secondary teacher-submit" type="submit">นำเข้ารายชื่อ</button>
                 </div>
             </form>
         </section>
@@ -118,7 +124,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                     <span>ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</span>
                 </div>
             </div>
-            <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form">
+            <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form" data-teacher-filter-form>
                 <label>
                     <span class="teacher-filter-label">ค้นหานักเรียน</span>
                     <input name="q" type="search" value="<?= e($search) ?>" placeholder="ค้นหาชื่อหรือเลขประจำตัว" data-student-search>
@@ -132,11 +138,10 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                         <?php endforeach; ?>
                     </select>
                 </label>
-                <button class="btn btn-ghost" type="submit">กรอง</button>
             </form>
         </div>
 
-        <div class="table-scroll teacher-table-scroll">
+        <div class="teacher-table-scroll">
             <table class="student-table">
                 <thead>
                     <tr>
@@ -167,4 +172,42 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
             </table>
         </div>
     </section>
+
+    <dialog class="teacher-import-modal" data-import-modal aria-labelledby="import-modal-title">
+        <div class="teacher-import-modal-panel">
+            <button class="modal-close teacher-import-modal-close" type="button" data-import-modal-close aria-label="ปิด">×</button>
+            <div class="teacher-import-modal-head">
+                <span class="teacher-import-modal-icon" aria-hidden="true"></span>
+                <div>
+                    <h2 id="import-modal-title">ตรวจรายชื่อก่อนนำเข้า</h2>
+                    <p data-import-modal-summary>เลือกไฟล์รายชื่อเพื่อดูข้อมูลทั้งหมดก่อนบันทึกเข้าระบบ</p>
+                </div>
+            </div>
+            <div class="teacher-import-modal-body">
+                <div class="teacher-import-loading" data-import-loading hidden>
+                    <span aria-hidden="true"></span>
+                    <strong>กำลังอ่านไฟล์รายชื่อ</strong>
+                </div>
+                <div class="teacher-import-error" data-import-error hidden></div>
+                <div class="teacher-import-preview-table table-scroll" data-import-preview hidden>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>แถว</th>
+                                <th>เลขประจำตัว</th>
+                                <th>ชื่อนักเรียน</th>
+                                <th>ชั้น</th>
+                                <th>ห้อง</th>
+                            </tr>
+                        </thead>
+                        <tbody data-import-preview-body></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="teacher-import-modal-actions">
+                <button class="btn btn-ghost" type="button" data-import-modal-close>เลือกไฟล์ใหม่</button>
+                <button class="btn btn-secondary" type="button" data-import-submit disabled>นำเข้ารายชื่อ</button>
+            </div>
+        </div>
+    </dialog>
 </section>

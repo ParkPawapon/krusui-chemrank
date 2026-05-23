@@ -53,8 +53,9 @@ final class PdoStudentRepository implements StudentRepository
         }
 
         if ($search !== null && trim($search) !== '') {
-            $sql .= ' AND (s.full_name LIKE :search OR s.student_number LIKE :search)';
-            $params['search'] = '%' . trim($search) . '%';
+            $sql .= ' AND (s.full_name LIKE :search_name OR s.student_number LIKE :search_number)';
+            $params['search_name'] = '%' . trim($search) . '%';
+            $params['search_number'] = '%' . trim($search) . '%';
         }
 
         $sql .= ' ORDER BY s.`class` ASC, s.room ASC, s.drops DESC, s.full_name ASC';
