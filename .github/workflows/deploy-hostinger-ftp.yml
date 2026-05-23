@@ -1,0 +1,159 @@
+name: Deploy to Hostinger via FTP
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_url:
+        description: "Production APP_URL, for example https://chemrank.example.com"
+        required: true
+        type: string
+      remote_dir:
+        description: "Dedicated FTP remote directory, for example /public_html/"
+        required: true
+        default: "/public_html/"
+        type: string
+
+concurrency:
+  group: hostinger-production-ftp
+  cancel-in-progress: false
+
+jobs:
+  build-test-deploy:
+    name: Build, test, and deploy PHP app
+    runs-on: ubuntu-24.04
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PHP runtime and FTP client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            php-cli php-mbstring php-zip php-sqlite3 php-mysql unzip lftp
+          php -v
+          php -m | grep -E '^(PDO|pdo_mysql|pdo_sqlite|mbstring|zip)$'
+          lftp --version
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build production assets
+        run: npm run build
+
+      - name: Run PHP business-rule tests
+        run: php tests/run.php
+
+      - name: Create production environment file
+        shell: bash
+        env:
+          APP_URL: ${{ inputs.app_url }}
+          DB_HOST: ${{ secrets.HOSTINGER_DB_HOST }}
+          DB_DATABASE: ${{ secrets.HOSTINGER_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.HOSTINGER_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.HOSTINGER_DB_PASSWORD }}
+        run: |
+          set -euo pipefail
+          : "${APP_URL:?APP_URL is required}"
+          : "${DB_HOST:?HOSTINGER_DB_HOST secret is required}"
+          : "${DB_DATABASE:?HOSTINGER_DB_DATABASE secret is required}"
+          : "${DB_USERNAME:?HOSTINGER_DB_USERNAME secret is required}"
+          : "${DB_PASSWORD:?HOSTINGER_DB_PASSWORD secret is required}"
+
+          cat > .env <<EOF
+          APP_NAME="Chem Rank"
+          APP_ENV=production
+          APP_DEBUG=false
+          APP_URL=${APP_URL}
+          APP_TIMEZONE=Asia/Bangkok
+
+          DB_CONNECTION=mysql
+          DB_HOST=${DB_HOST}
+          DB_PORT=3306
+          DB_DATABASE=${DB_DATABASE}
+          DB_USERNAME=${DB_USERNAME}
+          DB_PASSWORD=${DB_PASSWORD}
+          DB_CHARSET=utf8mb4
+
+          SESSION_NAME=chem_rank_session
+          SESSION_LIFETIME=7200
+          SESSION_SECURE_COOKIE=true
+          SESSION_SAME_SITE=Lax
+
+          LOGIN_ATTEMPTS=5
+          LOGIN_DECAY_SECONDS=900
+          EOF
+
+          sed -i 's/^          //' .env
+          grep -q '^APP_DEBUG=false$' .env
+          grep -q '^DB_CONNECTION=mysql$' .env
+
+      - name: Validate deploy artifact
+        run: |
+          test -f .htaccess
+          test -f public/.htaccess
+          test -f public/index.php
+          test -f public/assets/css/app.css
+          test -f database/schema.mysql.sql
+          test -f .env
+          test ! -d node_modules/.git
+
+      - name: Deploy files over FTP
+        shell: bash
+        env:
+          FTP_HOST: ${{ secrets.HOSTINGER_FTP_HOST }}
+          FTP_USERNAME: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          FTP_PORT: ${{ secrets.HOSTINGER_FTP_PORT }}
+          FTP_REMOTE_DIR: ${{ inputs.remote_dir }}
+        run: |
+          set -euo pipefail
+          : "${FTP_HOST:?HOSTINGER_FTP_HOST secret is required}"
+          : "${FTP_USERNAME:?HOSTINGER_FTP_USERNAME secret is required}"
+          : "${FTP_PASSWORD:?HOSTINGER_FTP_PASSWORD secret is required}"
+          : "${FTP_PORT:?HOSTINGER_FTP_PORT secret is required}"
+          : "${FTP_REMOTE_DIR:?remote_dir input is required}"
+
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
+          set ftp:ssl-allow no
+          set ftp:passive-mode on
+          set net:max-retries 2
+          set net:timeout 25
+          set cmd:fail-exit yes
+          set xfer:clobber on
+          mkdir -p "$FTP_REMOTE_DIR"
+          mirror -R --delete --verbose \
+            --exclude-glob .git/** \
+            --exclude-glob .github/** \
+            --exclude-glob node_modules/** \
+            --exclude-glob tests/** \
+            --exclude-glob storage/logs/** \
+            --exclude-glob storage/rate-limit/** \
+            --exclude-glob .env.example \
+            --exclude-glob .env.docker \
+            --exclude-glob docker-compose.yml \
+            --exclude-glob Dockerfile \
+            --exclude-glob '*.map' \
+            --exclude-glob '.DS_Store' \
+            --exclude-glob '.well-known/**' \
+            ./ "$FTP_REMOTE_DIR"
+          bye
+          LFTP
+
+      - name: Post-deploy reminder
+        run: |
+          echo "Deploy completed. If this is the first deploy, import database/schema.mysql.sql in phpMyAdmin and create the first teacher account."
