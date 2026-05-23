@@ -61,7 +61,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                     <span>ห้อง</span>
                     <input name="room" type="text" required maxlength="20" placeholder="เช่น 1">
                 </label>
-                <label>
+                <label class="teacher-academic-field">
                     <span>ปีการศึกษา</span>
                     <select name="academic_year_id" required>
                         <?php foreach ($academicYears as $academicYear): ?>
@@ -71,10 +71,6 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                         <?php endforeach; ?>
                     </select>
                 </label>
-                <div class="teacher-password-note">
-                    <span>รหัสผ่านเริ่มต้น</span>
-                    <strong>12345678</strong>
-                </div>
                 <button class="btn btn-primary teacher-submit" type="submit">เพิ่มนักเรียน</button>
             </form>
         </section>
@@ -96,7 +92,7 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                     <input name="student_file" type="file" required accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
                     <small>ขนาดไฟล์ไม่เกิน 5 MB</small>
                 </label>
-                <div class="teacher-import-fields">
+                <div class="teacher-import-bottom">
                     <label>
                         <span>ปีการศึกษา</span>
                         <select name="academic_year_id" required>
@@ -107,29 +103,28 @@ $averageDrops = $totalStudents > 0 ? (int) round($totalDrops / $totalStudents) :
                             <?php endforeach; ?>
                         </select>
                     </label>
+                    <button class="btn btn-secondary teacher-submit" type="submit">นำเข้ารายชื่อ</button>
                 </div>
-                <div class="teacher-import-note">
-                    <span>รหัสผ่านเริ่มต้นของนักเรียนที่นำเข้า</span>
-                    <strong>12345678</strong>
-                </div>
-                <button class="btn btn-secondary teacher-submit" type="submit">นำเข้ารายชื่อ</button>
             </form>
         </section>
     </div>
 
     <section class="teacher-table-card">
         <div class="teacher-table-head">
-            <div>
+            <div class="teacher-table-title-block">
                 <h2>รายชื่อนักเรียน</h2>
-                <p>ปีการศึกษาปัจจุบัน <?= e($activeAcademicYear->name) ?> · ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</p>
+                <div class="teacher-table-summary" aria-label="ภาพรวมรายชื่อ">
+                    <span>ปีการศึกษาปัจจุบัน <?= e($activeAcademicYear->name) ?></span>
+                    <span>ค่าเฉลี่ย <?= e((string) $averageDrops) ?> หยดสาร</span>
+                </div>
             </div>
             <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form">
                 <label>
-                    <span class="sr-only">ค้นหานักเรียน</span>
+                    <span class="teacher-filter-label">ค้นหานักเรียน</span>
                     <input name="q" type="search" value="<?= e($search) ?>" placeholder="ค้นหาชื่อหรือเลขประจำตัว" data-student-search>
                 </label>
                 <label>
-                    <span class="sr-only">เลือกชั้นเรียน</span>
+                    <span class="teacher-filter-label">เลือกชั้นเรียน</span>
                     <select name="class" data-class-filter>
                         <option value="">ทุกชั้นเรียน</option>
                         <?php foreach ($classNames as $className): ?>

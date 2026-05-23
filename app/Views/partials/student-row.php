@@ -32,7 +32,6 @@ $progress = $ranks->progress($student->drops);
             <input type="hidden" name="student_id" value="<?= e((string) $student->id) ?>">
             <label class="sr-only" for="amount-<?= e((string) $student->id) ?>">จำนวนหยด</label>
             <input id="amount-<?= e((string) $student->id) ?>" class="table-input" name="amount" type="number" min="1" max="999" value="1" inputmode="numeric">
-            <input class="reason-input" name="reason" type="text" maxlength="160" placeholder="เหตุผล">
             <button class="icon-action add" name="type" value="add" type="submit" title="เพิ่มหยดสาร" aria-label="เพิ่มหยดสาร">
                 <span aria-hidden="true">+</span>
             </button>
