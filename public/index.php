@@ -221,6 +221,11 @@ $router->post('/teacher/students/delete', function (Request $request) use ($auth
     (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->deleteStudent($request);
 });
 
+$router->post('/teacher/students/reset-password', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
+    $authMiddleware->requireRole(Role::TEACHER);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->resetStudentPassword($request);
+});
+
 $router->get('/leaderboard', function (Request $request) use ($leaderboard, $students): string {
     return (new LeaderboardController($leaderboard, $students))->index($request);
 });

@@ -229,4 +229,24 @@ final class TeacherController
 
         Response::redirect('/teacher');
     }
+
+    public function resetStudentPassword(Request $request): never
+    {
+        $user = $this->auth->currentUser();
+
+        try {
+            $this->studentService->resetStudentPassword(
+                (int) $request->post('student_id', 0),
+                (int) ($user?->id ?? 0),
+                self::INITIAL_STUDENT_PASSWORD
+            );
+            Flash::put('success', 'รีเซ็ตรหัสผ่านนักเรียนเรียบร้อย');
+        } catch (\InvalidArgumentException $exception) {
+            Flash::put('error', $exception->getMessage());
+        } catch (\Throwable) {
+            Flash::put('error', 'ไม่สามารถรีเซ็ตรหัสผ่านได้');
+        }
+
+        Response::redirect('/teacher');
+    }
 }

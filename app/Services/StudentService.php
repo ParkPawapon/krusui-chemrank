@@ -199,4 +199,42 @@ final class StudentService
             throw $exception;
         }
     }
+
+    public function resetStudentPassword(int $studentId, int $teacherId, string $password): void
+    {
+        $password = trim($password);
+
+        if ($studentId < 1) {
+            throw new \InvalidArgumentException('ไม่พบนักเรียนที่เลือก');
+        }
+
+        if (mb_strlen($password) < 8) {
+            throw new \InvalidArgumentException('รหัสผ่านใหม่ต้องมีอย่างน้อย 8 ตัวอักษร');
+        }
+
+        $student = $this->students->findById($studentId);
+
+        if (!$student) {
+            throw new \InvalidArgumentException('ไม่พบนักเรียนที่เลือก');
+        }
+
+        if ($student->userId === null) {
+            throw new \InvalidArgumentException('ไม่พบบัญชีเข้าสู่ระบบของนักเรียน');
+        }
+
+        $this->pdo->beginTransaction();
+
+        try {
+            $this->users->updatePasswordHash($student->userId, $this->passwords->hash($password));
+            $this->activityLogs->record($teacherId > 0 ? $teacherId : null, 'student.password_reset', 'student', $studentId, [
+                'student_number' => $student->studentNumber,
+                'full_name' => $student->fullName,
+                'user_id' => $student->userId,
+            ]);
+            $this->pdo->commit();
+        } catch (\Throwable $exception) {
+            $this->pdo->rollBack();
+            throw $exception;
+        }
+    }
 }
