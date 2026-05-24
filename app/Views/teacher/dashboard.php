@@ -177,7 +177,7 @@
             <div class="teacher-import-modal-head">
                 <span class="teacher-import-modal-icon" aria-hidden="true"></span>
                 <div class="teacher-import-modal-title">
-                    <small>Excel Import Preview</small>
+                    <small>ตรวจไฟล์รายชื่อ</small>
                     <h2 id="import-modal-title">ตรวจรายชื่อก่อนนำเข้า</h2>
                     <p data-import-modal-summary>เลือกไฟล์รายชื่อเพื่อดูข้อมูลทั้งหมดก่อนบันทึกเข้าระบบ</p>
                 </div>
@@ -211,7 +211,7 @@
                 </div>
             </div>
             <div class="teacher-import-modal-actions">
-                <button class="btn teacher-import-secondary-action" type="button" data-import-modal-close>เลือกไฟล์ใหม่</button>
+                <button class="btn teacher-import-secondary-action" type="button" data-import-reset>เลือกไฟล์ใหม่</button>
                 <button class="btn btn-secondary teacher-import-primary-action" type="button" data-import-submit disabled>นำเข้ารายชื่อ</button>
             </div>
         </div>

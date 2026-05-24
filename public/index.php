@@ -161,7 +161,7 @@ $router->get('/teacher/profile', function () use ($authMiddleware, $auth, $userP
         $csrf,
         '/teacher/profile',
         'โปรไฟล์ครู',
-        'เปลี่ยนรหัสผ่านบัญชีครูให้ปลอดภัย โดยข้อมูลนักเรียนและบันทึกหยดสารจะยังอยู่ครบ',
+        'ตั้งรหัสผ่านใหม่ให้บัญชีครู โดยข้อมูลนักเรียนและบันทึกหยดสารยังอยู่ครบ',
         'btn-secondary',
     ))->show();
 });
@@ -174,7 +174,7 @@ $router->post('/teacher/profile/password', function (Request $request) use ($aut
         $csrf,
         '/teacher/profile',
         'โปรไฟล์ครู',
-        'เปลี่ยนรหัสผ่านบัญชีครูให้ปลอดภัย โดยข้อมูลนักเรียนและบันทึกหยดสารจะยังอยู่ครบ',
+        'ตั้งรหัสผ่านใหม่ให้บัญชีครู โดยข้อมูลนักเรียนและบันทึกหยดสารยังอยู่ครบ',
         'btn-secondary',
     ))->updatePassword($request);
 });

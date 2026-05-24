@@ -1742,6 +1742,15 @@
     @apply max-w-xl text-base font-semibold leading-8 text-ink/[0.66] md:text-lg;
   }
 
+  .profile-copy-badges {
+    @apply flex flex-wrap gap-2 pt-1;
+  }
+
+  .profile-copy-badges span {
+    @apply rounded-full border border-white/90 bg-white/[0.68] px-4 py-2 text-sm font-black text-ink/[0.62] shadow-sm;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.1), 0 10px 18px rgb(var(--rose-rgb) / 0.08);
+  }
+
   .profile-password-form {
     @apply grid gap-4 rounded-[30px] border border-white/90 bg-white/[0.74] p-5 shadow-soft md:p-6;
     box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.42), 0 18px 36px rgb(var(--mint-rgb) / 0.12);
@@ -1845,6 +1854,16 @@
   .profile-page-teacher .profile-eyebrow,
   .profile-page-teacher .profile-form-head p {
     color: rgb(var(--rose-rgb) / 0.72);
+  }
+
+  .profile-page-teacher .profile-copy-badges span:nth-child(1) {
+    background: linear-gradient(135deg, rgb(var(--mint-soft-rgb) / 0.82), rgb(255 255 255 / 0.78));
+    color: rgb(42 116 110 / 0.82);
+  }
+
+  .profile-page-teacher .profile-copy-badges span:nth-child(2) {
+    background: linear-gradient(135deg, rgb(var(--gold-soft-rgb) / 0.84), rgb(255 255 255 / 0.8));
+    color: rgb(139 93 36 / 0.82);
   }
 
   .profile-page-teacher .profile-lock-icon {
@@ -2577,7 +2596,8 @@
   }
 
   .teacher-import-modal {
-    @apply m-auto max-h-[min(820px,calc(100vh-2rem))] w-[min(1040px,calc(100vw-2rem))] overflow-visible border-0 bg-transparent p-0;
+    @apply m-auto w-[min(1080px,calc(100vw-2rem))] overflow-hidden border-0 bg-transparent p-0;
+    max-height: min(840px, calc(100dvh - 2rem));
   }
 
   .teacher-import-modal::backdrop {
@@ -2589,7 +2609,10 @@
   }
 
   .teacher-import-modal-panel {
-    @apply relative grid max-h-[min(820px,calc(100vh-2rem))] gap-5 overflow-hidden rounded-[34px] border border-white/90 bg-white/[0.94] p-5 shadow-soft backdrop-blur md:p-6;
+    @apply relative grid gap-4 overflow-hidden rounded-[34px] border border-white/90 bg-white/[0.94] p-4 shadow-soft backdrop-blur md:gap-5 md:p-6;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: min(840px, calc(100dvh - 2rem));
+    max-height: min(840px, calc(100dvh - 2rem));
     background:
       linear-gradient(rgb(255 255 255 / 0.56), rgb(255 255 255 / 0.16)) 22px 18px / 170px 18px no-repeat,
       radial-gradient(circle at 12% 10%, rgb(var(--mint-rgb) / 0.2), transparent 30%),
@@ -2627,7 +2650,7 @@
   }
 
   .teacher-import-modal-head {
-    @apply relative z-10 grid gap-4 pr-10 md:grid-cols-[72px_minmax(0,1fr)_auto] md:items-center;
+    @apply relative z-10 grid gap-4 pr-11 md:grid-cols-[72px_minmax(0,1fr)_auto] md:items-center;
   }
 
   .teacher-import-modal-title {
@@ -2635,15 +2658,16 @@
   }
 
   .teacher-import-modal-title small {
-    @apply mb-1 inline-flex rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
+    @apply mb-2 inline-flex rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.18);
   }
 
   .teacher-import-modal-head h2 {
-    @apply text-3xl font-black leading-tight text-ink md:text-4xl;
+    @apply text-2xl font-black leading-tight text-ink md:text-4xl;
   }
 
   .teacher-import-modal-head p {
-    @apply mt-2 max-w-2xl text-sm font-bold leading-6 text-ink/[0.58];
+    @apply mt-2 max-w-2xl text-sm font-bold leading-6 text-ink/[0.62] md:text-base;
   }
 
   .teacher-import-modal-icon {
@@ -2662,7 +2686,8 @@
   }
 
   .teacher-import-modal-count {
-    @apply hidden min-w-32 rounded-[24px] border border-white bg-white/[0.78] px-5 py-4 text-center shadow-sm md:grid;
+    @apply hidden min-w-32 rounded-[24px] border border-white bg-white/[0.82] px-5 py-4 text-center shadow-sm md:grid;
+    box-shadow: inset 0 0 0 1px rgb(var(--gold-rgb) / 0.16), 0 16px 28px rgb(var(--gold-rgb) / 0.1);
   }
 
   .teacher-import-modal-count strong {
@@ -2678,7 +2703,8 @@
   }
 
   .teacher-import-modal-body {
-    @apply relative z-10 min-h-56 overflow-hidden rounded-[28px] border border-white/80 bg-white/[0.54] p-2 shadow-sm;
+    @apply relative z-10 min-h-0 overflow-hidden rounded-[28px] border border-white/80 bg-white/[0.58] p-2 shadow-sm;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.08), 0 14px 28px rgb(var(--mint-rgb) / 0.08);
   }
 
   .teacher-import-loading {
@@ -2707,19 +2733,24 @@
   }
 
   .teacher-import-preview-table {
-    @apply max-h-[480px] overflow-auto rounded-[24px] border-0 bg-transparent shadow-none;
+    @apply h-full overflow-auto rounded-[24px] border-0 bg-transparent p-1 shadow-none;
+    scrollbar-color: color-mix(in srgb, var(--mint) 70%, var(--sky)) rgb(var(--mint-soft-rgb) / 0.72);
+    scrollbar-width: thin;
   }
 
   .teacher-import-preview-table table {
-    @apply w-full min-w-[760px] border-separate border-spacing-y-2 text-left text-sm;
+    @apply w-full min-w-[820px] border-separate border-spacing-y-2 text-left text-sm;
   }
 
   .teacher-import-preview-table th {
-    @apply sticky top-0 z-10 bg-mint-100/95 px-4 py-3 text-xs font-black uppercase text-ink/[0.55] first:rounded-l-[18px] last:rounded-r-[18px];
+    @apply sticky top-0 z-10 bg-mint-100/95 px-4 py-3 text-xs font-black text-ink/[0.55] first:rounded-l-[18px] last:rounded-r-[18px];
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 16px rgb(var(--mint-rgb) / 0.08);
   }
 
   .teacher-import-preview-table td {
-    @apply bg-white/[0.86] px-4 py-4 font-bold text-ink/70 shadow-sm first:rounded-l-[18px] last:rounded-r-[18px];
+    @apply bg-white/[0.9] px-4 py-3.5 font-bold text-ink/70 shadow-sm first:rounded-l-[18px] last:rounded-r-[18px];
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.78), 0 10px 18px rgb(var(--mint-rgb) / 0.06);
   }
 
   .import-row-index {
@@ -2727,11 +2758,23 @@
   }
 
   .import-ready-chip {
-    @apply inline-flex rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
+    @apply inline-flex items-center gap-1.5 rounded-full bg-mint-50 px-3 py-1 text-xs font-black text-leaf-700;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.16);
+  }
+
+  .import-ready-chip::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--mint);
+    box-shadow: 0 0 0 3px rgb(var(--mint-rgb) / 0.16);
   }
 
   .teacher-import-modal-actions {
-    @apply relative z-10 flex flex-col-reverse gap-3 border-t border-white/80 pt-4 sm:flex-row sm:justify-end;
+    @apply relative z-10 flex flex-col-reverse gap-3 rounded-[26px] border border-white/85 bg-white/[0.72] p-3 shadow-sm sm:flex-row sm:items-center sm:justify-end;
+    box-shadow: inset 0 0 0 1px rgb(var(--gold-rgb) / 0.08), 0 -8px 22px rgb(var(--paper-rgb) / 0.72);
   }
 
   .teacher-import-modal-actions .btn {
@@ -2739,7 +2782,8 @@
   }
 
   .teacher-import-secondary-action {
-    @apply bg-white/85 text-ink/[0.68] shadow-sm hover:-translate-y-0.5;
+    @apply bg-white/90 text-ink/[0.68] shadow-sm hover:-translate-y-0.5;
+    box-shadow: inset 0 0 0 1px rgb(var(--rose-rgb) / 0.14), 0 10px 18px rgb(var(--rose-rgb) / 0.08);
   }
 
   .teacher-import-primary-action {
@@ -4640,6 +4684,63 @@
 
   .teacher-filter-form {
     @apply w-full;
+  }
+
+  .teacher-import-modal {
+    width: calc(100vw - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .teacher-import-modal-panel {
+    @apply gap-3 rounded-[28px] p-3;
+    height: calc(100dvh - 1rem);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .teacher-import-modal-close {
+    @apply right-3 top-3;
+  }
+
+  .teacher-import-modal-head {
+    @apply grid-cols-[56px_minmax(0,1fr)] gap-3 pr-10;
+  }
+
+  .teacher-import-modal-icon {
+    @apply h-14 w-14 rounded-[20px];
+  }
+
+  .teacher-import-modal-icon::before {
+    width: 30px;
+    height: 30px;
+  }
+
+  .teacher-import-modal-head h2 {
+    @apply text-2xl;
+  }
+
+  .teacher-import-modal-head p {
+    @apply text-xs leading-5;
+  }
+
+  .teacher-import-modal-body {
+    @apply rounded-[22px] p-1;
+  }
+
+  .teacher-import-preview-table {
+    @apply rounded-[20px] p-0.5;
+  }
+
+  .teacher-import-preview-table table {
+    @apply min-w-[680px] text-xs;
+  }
+
+  .teacher-import-preview-table th,
+  .teacher-import-preview-table td {
+    @apply px-3 py-3;
+  }
+
+  .teacher-import-modal-actions {
+    @apply rounded-[22px] p-2;
   }
 
   .hero-copy h1,

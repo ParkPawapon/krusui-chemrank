@@ -187,8 +187,9 @@ function initImportPreview() {
   const summary = modal?.querySelector('[data-import-modal-summary]');
   const countBox = modal?.querySelector('[data-import-modal-count]');
   const submitButton = modal?.querySelector('[data-import-submit]');
+  const resetButton = modal?.querySelector('[data-import-reset]');
 
-  if (!form || !fileInput || !modal || !preview || !body || !loading || !errorBox || !summary || !countBox || !submitButton) {
+  if (!form || !fileInput || !modal || !preview || !body || !loading || !errorBox || !summary || !countBox || !submitButton || !resetButton) {
     return;
   }
 
@@ -202,6 +203,15 @@ function initImportPreview() {
 
   modal.querySelectorAll('[data-import-modal-close]').forEach((button) => {
     button.addEventListener('click', closeModal);
+  });
+
+  resetButton.addEventListener('click', () => {
+    fileInput.value = '';
+    closeModal();
+    window.requestAnimationFrame(() => {
+      fileInput.focus({ preventScroll: false });
+      fileInput.click();
+    });
   });
 
   submitButton.addEventListener('click', () => {
@@ -235,7 +245,7 @@ function initImportPreview() {
       loading.hidden = true;
       preview.hidden = false;
       submitButton.disabled = (payload.rows || []).length === 0;
-      summary.textContent = `พบรายชื่อ ${payload.rows.length} คน ตรวจสอบข้อมูลก่อนกดนำเข้ารายชื่อ`;
+      summary.textContent = `พบ ${payload.rows.length} รายชื่อ ตรวจเลขประจำตัว ชื่อ และห้องเรียนก่อนนำเข้า`;
       updateImportCount(countBox, payload.rows.length);
     } catch (error) {
       loading.hidden = true;
@@ -259,7 +269,9 @@ function openModal(modal) {
 function setImportModalState({ loading, errorBox, preview, submitButton, summary, countBox }) {
   loading.hidden = false;
   errorBox.hidden = true;
+  errorBox.textContent = '';
   preview.hidden = true;
+  preview.scrollTop = 0;
   submitButton.disabled = true;
   summary.textContent = 'กำลังตรวจรายชื่อในไฟล์ที่เลือก';
   updateImportCount(countBox, 0);
