@@ -2532,8 +2532,8 @@
   }
 
   .teacher-export-button {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white/95 px-4 text-sm font-black text-ink shadow-sm transition;
-    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.26), 0 14px 24px rgb(var(--mint-rgb) / 0.12);
+    @apply inline-flex min-h-[58px] min-w-[224px] items-center justify-start gap-3 rounded-[24px] bg-white/95 px-3.5 py-2 text-left text-sm font-black text-ink shadow-sm transition;
+    box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.24), 0 16px 28px rgb(var(--mint-rgb) / 0.13);
   }
 
   .teacher-export-button:hover {
@@ -2542,13 +2542,17 @@
     box-shadow: inset 0 0 0 1px rgb(var(--mint-rgb) / 0.42), 0 18px 30px rgb(var(--mint-rgb) / 0.16);
   }
 
+  .teacher-export-button > span:not(.teacher-export-icon) {
+    @apply min-w-0 flex-1 leading-tight;
+  }
+
   .teacher-export-button small {
-    @apply rounded-full px-2 py-1 text-[11px] font-black text-leaf-700;
+    @apply shrink-0 rounded-full px-3 py-1.5 text-[11px] font-black text-leaf-700;
     background: rgb(var(--mint-rgb) / 0.16);
   }
 
   .teacher-export-icon {
-    @apply grid h-8 w-8 place-items-center rounded-full text-white;
+    @apply grid h-10 w-10 shrink-0 place-items-center rounded-[16px] text-white;
     background: linear-gradient(135deg, var(--mint), var(--sky));
     box-shadow: inset 0 0 0 2px rgb(255 255 255 / 0.5), 0 10px 18px rgb(var(--sky-rgb) / 0.16);
   }
@@ -2992,11 +2996,95 @@
   }
 
   .teacher-table-actions {
-    @apply text-right;
+    @apply min-w-[112px] text-right;
   }
 
   .teacher-table-actions .text-action {
     @apply rounded-full px-3 py-2 text-xs;
+  }
+
+  .teacher-action-group {
+    @apply inline-flex items-center justify-end gap-2;
+  }
+
+  .teacher-action-group form {
+    @apply inline-flex;
+  }
+
+  .teacher-row-action {
+    @apply relative grid h-11 w-11 shrink-0 place-items-center rounded-[16px] border border-white/90 text-ink transition duration-200 focus:outline-none focus-visible:ring-4 focus-visible:ring-water/25;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.66), 0 12px 22px rgb(var(--purple-rgb) / 0.08);
+  }
+
+  .teacher-row-action:hover {
+    @apply -translate-y-0.5;
+  }
+
+  .teacher-row-action::before {
+    content: "";
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: currentColor;
+  }
+
+  .teacher-row-action::after {
+    content: attr(data-tooltip);
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    z-index: 30;
+    min-width: max-content;
+    max-width: 190px;
+    transform: translate3d(-50%, 6px, 0) scale(0.96);
+    opacity: 0;
+    border-radius: 999px;
+    padding: 0.45rem 0.72rem;
+    background: rgb(var(--ink-rgb) / 0.92);
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 14px 26px rgb(var(--ink-rgb) / 0.18);
+    transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
+  }
+
+  .teacher-row-action:hover::after,
+  .teacher-row-action:focus-visible::after {
+    transform: translate3d(-50%, 0, 0) scale(1);
+    opacity: 1;
+  }
+
+  .teacher-row-action-reset {
+    color: var(--leaf);
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--mint-soft-rgb) / 0.92));
+  }
+
+  .teacher-row-action-reset:hover {
+    color: white;
+    background: linear-gradient(135deg, var(--mint), var(--leaf));
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.42), 0 16px 26px rgb(var(--mint-rgb) / 0.2);
+  }
+
+  .teacher-row-action-reset::before {
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M21 2v6h-6'/%3E%3Cpath d='M3 12a9 9 0 0 1 15.5-6.2L21 8'/%3E%3Cpath d='M3 22v-6h6'/%3E%3Cpath d='M21 12a9 9 0 0 1-15.5 6.2L3 16'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .teacher-row-action-delete {
+    color: var(--rose);
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.96), rgb(var(--peach-soft-rgb) / 0.9));
+  }
+
+  .teacher-row-action-delete:hover {
+    color: white;
+    background: linear-gradient(135deg, var(--peach), var(--rose));
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.42), 0 16px 26px rgb(var(--rose-rgb) / 0.18);
+  }
+
+  .teacher-row-action-delete::before {
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 6h18'/%3E%3Cpath d='M8 6V4h8v2'/%3E%3Cpath d='M19 6l-1 14H6L5 6'/%3E%3Cpath d='M10 11v5'/%3E%3Cpath d='M14 11v5'/%3E%3C/svg%3E") center / contain no-repeat;
   }
 
   .table-empty,
@@ -4910,6 +4998,15 @@
 
   .teacher-roster-top {
     @apply gap-3 px-1;
+  }
+
+  .teacher-roster-heading,
+  .teacher-export-button {
+    @apply w-full;
+  }
+
+  .teacher-export-button {
+    @apply min-w-0;
   }
 
   .teacher-table-card {

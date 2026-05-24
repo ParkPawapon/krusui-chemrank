@@ -41,10 +41,31 @@ $classroom = $student->className;
         </form>
     </td>
     <td class="teacher-table-actions">
-        <form action="<?= e(url('/teacher/students/delete')) ?>" method="post" data-confirm="ลบนักเรียนคนนี้หรือไม่?">
-            <?= $csrf->field() ?>
-            <input type="hidden" name="student_id" value="<?= e((string) $student->id) ?>">
-            <button class="text-action danger" type="submit">ลบ</button>
-        </form>
+        <div class="teacher-action-group" aria-label="จัดการนักเรียน <?= e($student->fullName) ?>">
+            <form action="<?= e(url('/teacher/students/reset-password')) ?>" method="post" data-confirm="รีเซ็ตรหัสผ่านนักเรียนคนนี้หรือไม่?">
+                <?= $csrf->field() ?>
+                <input type="hidden" name="student_id" value="<?= e((string) $student->id) ?>">
+                <button
+                    class="teacher-row-action teacher-row-action-reset"
+                    type="submit"
+                    aria-label="รีเซ็ตรหัสผ่าน <?= e($student->fullName) ?>"
+                    data-tooltip="รีเซ็ตรหัสผ่าน"
+                >
+                    <span aria-hidden="true"></span>
+                </button>
+            </form>
+            <form action="<?= e(url('/teacher/students/delete')) ?>" method="post" data-confirm="ลบนักเรียนคนนี้หรือไม่?">
+                <?= $csrf->field() ?>
+                <input type="hidden" name="student_id" value="<?= e((string) $student->id) ?>">
+                <button
+                    class="teacher-row-action teacher-row-action-delete"
+                    type="submit"
+                    aria-label="ลบนักเรียน <?= e($student->fullName) ?>"
+                    data-tooltip="ลบนักเรียน"
+                >
+                    <span aria-hidden="true"></span>
+                </button>
+            </form>
+        </div>
     </td>
 </tr>
