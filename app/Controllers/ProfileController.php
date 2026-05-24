@@ -19,6 +19,10 @@ final class ProfileController
         private readonly AuthService $auth,
         private readonly UserPasswordService $passwords,
         private readonly CsrfTokenManager $csrf,
+        private readonly string $profilePath = '/student/profile',
+        private readonly string $profileLabel = 'โปรไฟล์นักเรียน',
+        private readonly string $profileDescription = 'เปลี่ยนรหัสผ่านของบัญชีให้ปลอดภัยขึ้น โดยข้อมูลหยดสารและ Rank จะไม่เปลี่ยนแปลง',
+        private readonly string $buttonClass = 'btn-primary',
     ) {
     }
 
@@ -31,12 +35,17 @@ final class ProfileController
         }
 
         return View::render('profile/show', [
-            'title' => 'โปรไฟล์',
-            'description' => 'เปลี่ยนรหัสผ่านสำหรับบัญชีนักเรียน Chem Rank',
+            'title' => $this->profileLabel,
+            'description' => $this->profileDescription,
             'robots' => 'noindex,nofollow',
-            'canonicalPath' => '/student/profile',
+            'canonicalPath' => $this->profilePath,
             'user' => $user,
             'csrf' => $this->csrf,
+            'profileLabel' => $this->profileLabel,
+            'profileDescription' => $this->profileDescription,
+            'profileVariant' => str_contains($this->profilePath, '/teacher') ? 'teacher' : 'student',
+            'formAction' => $this->profilePath . '/password',
+            'buttonClass' => $this->buttonClass,
         ]);
     }
 
@@ -63,6 +72,6 @@ final class ProfileController
             Flash::put('error', 'ไม่สามารถเปลี่ยนรหัสผ่านได้ กรุณาลองใหม่');
         }
 
-        Response::redirect('/student/profile');
+        Response::redirect($this->profilePath);
     }
 }

@@ -57,6 +57,7 @@ $robotsHandler = static function (): string {
         'Disallow: /student',
         'Disallow: /student/profile',
         'Disallow: /teacher',
+        'Disallow: /teacher/profile',
         'Sitemap: ' . absolute_url('/sitemap.xml'),
         '',
     ]);
@@ -150,6 +151,32 @@ $router->get('/student/profile', function () use ($authMiddleware, $auth, $userP
 $router->post('/student/profile/password', function (Request $request) use ($authMiddleware, $auth, $userPasswordService, $csrf): never {
     $authMiddleware->requireRole(Role::STUDENT);
     (new ProfileController($auth, $userPasswordService, $csrf))->updatePassword($request);
+});
+
+$router->get('/teacher/profile', function () use ($authMiddleware, $auth, $userPasswordService, $csrf): string {
+    $authMiddleware->requireRole(Role::TEACHER);
+    return (new ProfileController(
+        $auth,
+        $userPasswordService,
+        $csrf,
+        '/teacher/profile',
+        'โปรไฟล์ครู',
+        'เปลี่ยนรหัสผ่านบัญชีครูให้ปลอดภัย โดยข้อมูลนักเรียนและบันทึกหยดสารจะยังอยู่ครบ',
+        'btn-secondary',
+    ))->show();
+});
+
+$router->post('/teacher/profile/password', function (Request $request) use ($authMiddleware, $auth, $userPasswordService, $csrf): never {
+    $authMiddleware->requireRole(Role::TEACHER);
+    (new ProfileController(
+        $auth,
+        $userPasswordService,
+        $csrf,
+        '/teacher/profile',
+        'โปรไฟล์ครู',
+        'เปลี่ยนรหัสผ่านบัญชีครูให้ปลอดภัย โดยข้อมูลนักเรียนและบันทึกหยดสารจะยังอยู่ครบ',
+        'btn-secondary',
+    ))->updatePassword($request);
 });
 
 $router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): string {
