@@ -23,6 +23,11 @@ final class LeaderboardService
         $students = $this->students->all($className);
         usort($students, static fn ($a, $b): int => [$b->drops, $a->fullName] <=> [$a->drops, $b->fullName]);
 
+        $dropCounts = [];
+        foreach ($students as $student) {
+            $dropCounts[$student->drops] = ($dropCounts[$student->drops] ?? 0) + 1;
+        }
+
         $ranked = [];
         $position = 0;
         $displayRank = 0;
@@ -41,11 +46,10 @@ final class LeaderboardService
                 'student' => $student,
                 'rank' => $this->ranks->forDrops($student->drops),
                 'progress' => $this->ranks->progress($student->drops),
-                'is_tied' => $position !== $displayRank,
+                'is_tied' => ($dropCounts[$student->drops] ?? 0) > 1,
             ];
         }
 
         return $ranked;
     }
 }
-
