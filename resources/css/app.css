@@ -3678,10 +3678,6 @@
     @apply md:grid-cols-[minmax(0,540px)] md:justify-center;
   }
 
-  .podium-featured.podium-count-2 {
-    grid-template-columns: 1fr;
-  }
-
   @media (min-width: 768px) {
     .podium-featured {
       grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.16fr) minmax(0, 0.92fr);
