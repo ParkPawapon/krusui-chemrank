@@ -11,6 +11,7 @@ $tests = [
     'LeaderboardServiceTest.php',
     'XlsxStudentImportReaderTest.php',
     'StudentExcelTemplateServiceTest.php',
+    'StudentRosterExportServiceTest.php',
 ];
 
 $failures = 0;

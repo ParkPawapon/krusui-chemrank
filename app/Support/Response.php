@@ -23,7 +23,7 @@ final class Response
         exit;
     }
 
-    public static function downloadContent(string $content, string $filename, string $contentType): never
+    public static function downloadContent(string $content, string $filename, string $contentType, string $cacheControl = 'private, max-age=3600'): never
     {
         $safeFilename = preg_replace('/[^A-Za-z0-9._-]/', '-', $filename) ?: 'download.bin';
 
@@ -31,7 +31,7 @@ final class Response
         header('Content-Type: ' . $contentType);
         header('Content-Disposition: attachment; filename="' . $safeFilename . '"');
         header('Content-Length: ' . strlen($content));
-        header('Cache-Control: private, max-age=3600');
+        header('Cache-Control: ' . $cacheControl);
         echo $content;
         exit;
     }

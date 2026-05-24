@@ -7,6 +7,17 @@
 /** @var string $search */
 /** @var \Domain\Rank\RankRegistry $ranks */
 /** @var \App\Services\CsrfTokenManager $csrf */
+$exportParams = [];
+
+if ($search !== '') {
+    $exportParams['q'] = $search;
+}
+
+if ($selectedClass !== '') {
+    $exportParams['class'] = $selectedClass;
+}
+
+$exportUrl = url('/teacher/students/export') . ($exportParams !== [] ? '?' . http_build_query($exportParams) : '');
 ?>
 <section class="teacher-dashboard page-band">
     <section class="teacher-hero">
@@ -117,8 +128,15 @@
 
     <section class="teacher-roster-area" data-teacher-results aria-live="polite">
         <div class="teacher-roster-top">
-            <div class="teacher-table-title-block">
-                <h2>รายชื่อนักเรียน</h2>
+            <div class="teacher-roster-heading">
+                <div class="teacher-table-title-block">
+                    <h2>รายชื่อนักเรียน</h2>
+                </div>
+                <a class="teacher-export-button" href="<?= e($exportUrl) ?>" data-teacher-export-link>
+                    <span class="teacher-export-icon" aria-hidden="true"></span>
+                    <span>ส่งออกข้อมูล</span>
+                    <small>Excel</small>
+                </a>
             </div>
 
             <form action="<?= e(url('/teacher')) ?>" method="get" class="filter-form teacher-filter-form" data-teacher-filter-form>

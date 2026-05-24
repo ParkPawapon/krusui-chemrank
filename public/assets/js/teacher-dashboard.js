@@ -82,7 +82,9 @@ function initTeacherFilters() {
   let timer = null;
 
   const submitFilter = () => {
-    loadTeacherResults(buildFilterUrl(form), true);
+    const url = buildFilterUrl(form);
+    updateTeacherExportLink(url);
+    loadTeacherResults(url, true);
   };
 
   form.addEventListener('submit', (event) => {
@@ -120,6 +122,20 @@ function buildFilterUrl(form) {
   url.search = params.toString();
 
   return url;
+}
+
+function updateTeacherExportLink(filterUrl) {
+  const exportLink = document.querySelector('[data-teacher-export-link]');
+  if (!exportLink) return;
+
+  const url = new URL('/teacher/students/export', window.location.origin);
+  filterUrl.searchParams.forEach((value, key) => {
+    if (['q', 'class'].includes(key) && String(value).trim() !== '') {
+      url.searchParams.set(key, value);
+    }
+  });
+
+  exportLink.href = url.toString();
 }
 
 async function loadTeacherResults(url, updateHistory) {

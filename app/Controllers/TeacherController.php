@@ -8,6 +8,7 @@ use App\Services\AuthService;
 use App\Services\CsrfTokenManager;
 use App\Services\StudentExcelImportService;
 use App\Services\StudentExcelTemplateService;
+use App\Services\StudentRosterExportService;
 use App\Services\StudentService;
 use App\Support\Flash;
 use App\Support\Request;
@@ -27,6 +28,7 @@ final class TeacherController
         private readonly StudentService $studentService,
         private readonly StudentExcelImportService $studentImportService,
         private readonly StudentExcelTemplateService $studentTemplateService,
+        private readonly StudentRosterExportService $studentRosterExportService,
         private readonly AcademicYearRepository $academicYears,
         private readonly RankRegistry $ranks,
         private readonly CsrfTokenManager $csrf,
@@ -139,6 +141,22 @@ final class TeacherController
             Response::downloadContent($template['content'], $template['filename'], $template['mimeType']);
         } catch (\Throwable) {
             Response::abort(500, 'ไม่สามารถดาวน์โหลดไฟล์ตัวอย่างได้ในขณะนี้');
+        }
+    }
+
+    public function exportStudents(Request $request): never
+    {
+        $className = trim((string) $request->query('class', ''));
+        $search = trim((string) $request->query('q', ''));
+
+        try {
+            $export = $this->studentRosterExportService->create(
+                $this->students->all($className !== '' ? $className : null, $search !== '' ? $search : null)
+            );
+
+            Response::downloadContent($export['content'], $export['filename'], $export['mimeType'], 'private, no-store, max-age=0');
+        } catch (\Throwable) {
+            Response::abort(500, 'ไม่สามารถส่งออกข้อมูลนักเรียนได้ในขณะนี้');
         }
     }
 
