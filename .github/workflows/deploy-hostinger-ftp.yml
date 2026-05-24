@@ -135,7 +135,7 @@ jobs:
           set net:timeout 25
           set cmd:fail-exit yes
           set xfer:clobber on
-          mkdir -p "$FTP_REMOTE_DIR"
+          mkdir -pf "$FTP_REMOTE_DIR"
           mirror -R --delete --verbose \
             --exclude-glob .git/** \
             --exclude-glob .github/** \
