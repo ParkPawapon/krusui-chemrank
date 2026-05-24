@@ -12,6 +12,11 @@ on:
         required: true
         default: "/public_html/"
         type: string
+      delete_remote:
+        description: "Delete remote files that are not in the deployment artifact"
+        required: true
+        default: false
+        type: boolean
 
 concurrency:
   group: hostinger-production-ftp
@@ -128,6 +133,12 @@ jobs:
           : "${FTP_PORT:?HOSTINGER_FTP_PORT secret is required}"
           : "${FTP_REMOTE_DIR:?remote_dir input is required}"
 
+          if [[ "${{ inputs.delete_remote }}" == "true" ]]; then
+            MIRROR_DELETE_FLAG="--delete"
+          else
+            MIRROR_DELETE_FLAG=""
+          fi
+
           lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "$FTP_HOST" <<LFTP
           set ftp:ssl-allow no
           set ftp:passive-mode on
@@ -136,17 +147,25 @@ jobs:
           set cmd:fail-exit yes
           set xfer:clobber on
           mkdir -pf "$FTP_REMOTE_DIR"
-          mirror -R --delete --verbose \
+          mirror -R $MIRROR_DELETE_FLAG --verbose \
             --exclude-glob .git/** \
             --exclude-glob .github/** \
+            --exclude-glob .dockerignore \
+            --exclude-glob .env.docker.example \
+            --exclude-glob .gitignore \
             --exclude-glob node_modules/** \
             --exclude-glob tests/** \
             --exclude-glob storage/logs/** \
             --exclude-glob storage/rate-limit/** \
             --exclude-glob .env.example \
             --exclude-glob .env.docker \
+            --exclude-glob compose.yml \
             --exclude-glob docker-compose.yml \
+            --exclude-glob docker/** \
             --exclude-glob Dockerfile \
+            --exclude-glob README.md \
+            --exclude-glob SECURITY.md \
+            --exclude-glob resources/** \
             --exclude-glob '*.map' \
             --exclude-glob '.DS_Store' \
             --exclude-glob '.well-known/**' \
