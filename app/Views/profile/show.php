@@ -7,8 +7,9 @@
 /** @var string $formAction */
 /** @var string $buttonClass */
 $isTeacherProfile = $profileVariant === 'teacher';
-$eyebrow = $isTeacherProfile ? 'บัญชีครู' : $profileLabel;
+$eyebrow = $isTeacherProfile ? 'ตั้งค่าบัญชี' : $profileLabel;
 $heading = $isTeacherProfile ? $profileLabel : $user->name;
+$formNote = $isTeacherProfile ? 'บันทึกแล้วใช้รหัสผ่านใหม่ในการเข้าสู่ระบบครั้งถัดไป' : 'ใช้รหัสผ่านใหม่อย่างน้อย 8 ตัวอักษร';
 ?>
 <section class="profile-page profile-page-<?= e($profileVariant) ?> page-band">
     <div class="profile-shell">
@@ -19,6 +20,12 @@ $heading = $isTeacherProfile ? $profileLabel : $user->name;
             <span class="profile-eyebrow"><?= e($eyebrow) ?></span>
             <h1><?= e($heading) ?></h1>
             <p><?= e($profileDescription) ?></p>
+            <?php if ($isTeacherProfile): ?>
+                <div class="profile-copy-badges" aria-label="รายละเอียดบัญชีครู">
+                    <span>ข้อมูลนักเรียนยังอยู่ครบ</span>
+                    <span>บันทึกหยดสารไม่เปลี่ยน</span>
+                </div>
+            <?php endif; ?>
         </div>
 
         <form action="<?= e(url($formAction)) ?>" method="post" class="profile-password-form">
@@ -27,7 +34,7 @@ $heading = $isTeacherProfile ? $profileLabel : $user->name;
                 <span class="profile-lock-icon" aria-hidden="true"></span>
                 <div>
                     <h2>เปลี่ยนรหัสผ่าน</h2>
-                    <p>ใช้รหัสผ่านใหม่อย่างน้อย 8 ตัวอักษร</p>
+                    <p><?= e($formNote) ?></p>
                 </div>
             </div>
 
