@@ -1,7 +1,7 @@
 Options -Indexes
 DirectoryIndex public/index.php
 
-<FilesMatch "^(\.env|\.git|composer\.(json|lock)|package(-lock)?\.json|tailwind\.config\.js|postcss\.config\.js)$">
+<FilesMatch "^(\.env.*|\.git.*|\.dockerignore|composer\.(json|lock)|package(-lock)?\.json|tailwind\.config\.js|postcss\.config\.js|compose\.yml|docker-compose\.yml|Dockerfile|README\.md|SECURITY\.md)$">
     Require all denied
 </FilesMatch>
 
