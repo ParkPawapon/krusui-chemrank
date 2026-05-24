@@ -1,19 +1,24 @@
 <?php
 /** @var \Domain\Entities\User $user */
 /** @var \App\Services\CsrfTokenManager $csrf */
+/** @var string $profileLabel */
+/** @var string $profileDescription */
+/** @var string $profileVariant */
+/** @var string $formAction */
+/** @var string $buttonClass */
 ?>
-<section class="profile-page page-band">
+<section class="profile-page profile-page-<?= e($profileVariant) ?> page-band">
     <div class="profile-shell">
         <span class="profile-soft-drop profile-soft-drop-a" aria-hidden="true"></span>
         <span class="profile-soft-drop profile-soft-drop-b" aria-hidden="true"></span>
 
         <div class="profile-copy">
-            <span class="profile-eyebrow">โปรไฟล์นักเรียน</span>
+            <span class="profile-eyebrow"><?= e($profileLabel) ?></span>
             <h1><?= e($user->name) ?></h1>
-            <p>เปลี่ยนรหัสผ่านของบัญชีให้ปลอดภัยขึ้น โดยข้อมูลหยดสารและ Rank จะไม่เปลี่ยนแปลง</p>
+            <p><?= e($profileDescription) ?></p>
         </div>
 
-        <form action="<?= e(url('/student/profile/password')) ?>" method="post" class="profile-password-form">
+        <form action="<?= e(url($formAction)) ?>" method="post" class="profile-password-form">
             <?= $csrf->field() ?>
             <div class="profile-form-head">
                 <span class="profile-lock-icon" aria-hidden="true"></span>
@@ -38,7 +43,7 @@
                 <input name="new_password_confirmation" type="password" autocomplete="new-password" required minlength="8" placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
             </label>
 
-            <button class="btn btn-primary profile-submit" type="submit">บันทึกรหัสผ่านใหม่</button>
+            <button class="btn <?= e($buttonClass) ?> profile-submit" type="submit">บันทึกรหัสผ่านใหม่</button>
         </form>
     </div>
 </section>

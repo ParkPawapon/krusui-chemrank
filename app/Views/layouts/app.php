@@ -29,9 +29,8 @@ $navItems = match ($currentRole) {
     ],
     'teacher' => [
         ['/teacher', 'ห้องครู'],
-        ['/teacher#teacher-import', 'นำเข้ารายชื่อ'],
         ['/leaderboard', 'อันดับห้องเรียน'],
-        ['/ranks', 'คู่มือ Rank'],
+        ['/teacher/profile', 'โปรไฟล์'],
     ],
     default => [
         ['/leaderboard', 'อันดับหยดสาร'],
