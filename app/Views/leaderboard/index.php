@@ -2,10 +2,27 @@
 /** @var array<int,array<string,mixed>> $rankedStudents */
 /** @var array<int,string> $classNames */
 /** @var string $selectedClass */
-$topThree = array_values(array_filter(
-    $rankedStudents,
-    static fn (array $entry): bool => (int) $entry['place'] <= 3
-));
+$topGroups = [1 => [], 2 => [], 3 => []];
+foreach ($rankedStudents as $entry) {
+    $place = (int) $entry['place'];
+    if ($place >= 1 && $place <= 3) {
+        $topGroups[$place][] = $entry;
+    }
+}
+
+$soloTopEntries = [];
+$tiedTopGroups = [];
+foreach ([1, 2, 3] as $place) {
+    $groupCount = count($topGroups[$place]);
+    if ($groupCount === 1) {
+        $soloTopEntries[$place] = $topGroups[$place][0];
+    } elseif ($groupCount > 1) {
+        $tiedTopGroups[$place] = $topGroups[$place];
+    }
+}
+
+$medalClassForPlace = static fn (int $place): string => $place === 1 ? 'gold' : ($place === 2 ? 'silver' : 'bronze');
+$placeTitle = [1 => 'อันดับ 1', 2 => 'อันดับ 2', 3 => 'อันดับ 3'];
 $studentCount = count($rankedStudents);
 $topEntry = $rankedStudents[0] ?? null;
 $topDrops = $topEntry ? (int) $topEntry['student']->drops : 0;
@@ -68,24 +85,28 @@ foreach ($rankedStudents as $entry) {
                         </div>
                     </div>
 
-                    <div class="podium">
-                        <?php foreach ($topThree as $podiumIndex => $entry): ?>
+                    <?php if ($soloTopEntries): ?>
+                    <div class="podium podium-featured podium-count-<?= e((string) count($soloTopEntries)) ?>">
+                        <?php foreach ([2, 1, 3] as $place): ?>
+                            <?php if (!isset($soloTopEntries[$place])) {
+                                continue;
+                            } ?>
                             <?php
-                            $place = (int) $entry['place'];
+                            $entry = $soloTopEntries[$place];
                             $student = $entry['student'];
                             $rank = $entry['rank'];
                             $progress = $entry['progress'];
-                            $isTied = !empty($entry['is_tied']);
                             ?>
-                            <article class="podium-card podium-slot-<?= e((string) ($podiumIndex + 1)) ?> place-<?= e((string) min(3, $place)) ?> <?= $isTied ? 'is-tied' : '' ?>" style="--rank-color: <?= e($rank->themeColor) ?>">
+                            <article class="podium-card podium-slot-<?= e((string) $place) ?> place-<?= e((string) $place) ?>" style="--rank-color: <?= e($rank->themeColor) ?>">
+                                <?php if ($place === 1): ?>
+                                    <span class="podium-crown" aria-hidden="true"></span>
+                                <?php endif; ?>
                                 <div class="podium-card-top">
-                                    <span class="leaderboard-place <?= e($place === 1 ? 'gold' : ($place === 2 ? 'silver' : 'bronze')) ?>">
+                                    <span class="leaderboard-place <?= e($medalClassForPlace($place)) ?>">
                                         <small>อันดับ</small>
                                         <?= e((string) $place) ?>
                                     </span>
-                                    <?php if ($isTied): ?>
-                                        <span class="tie-chip">อันดับร่วม</span>
-                                    <?php endif; ?>
+                                    <span class="podium-label"><?= e($place === 1 ? 'หยดสารสูงสุด' : $placeTitle[$place]) ?></span>
                                 </div>
                                 <div class="podium-rank-icon">
                                     <?= \App\Support\View::partial('partials/rank-badge', ['rank' => $rank, 'size' => 'md', 'showName' => false]) ?>
@@ -99,6 +120,61 @@ foreach ($rankedStudents as $entry) {
                             </article>
                         <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
+
+                    <?php foreach ($tiedTopGroups as $place => $entries): ?>
+                        <?php
+                        $firstEntry = $entries[0];
+                        $firstStudent = $firstEntry['student'];
+                        $firstRank = $firstEntry['rank'];
+                        ?>
+                        <section class="top-tie-panel top-tie-place-<?= e((string) $place) ?>" style="--rank-color: <?= e($firstRank->themeColor) ?>">
+                            <div class="top-tie-head">
+                                <span class="leaderboard-place <?= e($medalClassForPlace($place)) ?>">
+                                    <small>อันดับ</small>
+                                    <?= e((string) $place) ?>
+                                </span>
+                                <div>
+                                    <h3><?= e($placeTitle[$place]) ?> ร่วม</h3>
+                                    <p><?= e((string) count($entries)) ?> คนมี <?= e((string) $firstStudent->drops) ?> หยดสารเท่ากัน</p>
+                                </div>
+                            </div>
+
+                            <div class="top-tie-table-wrap" role="region" aria-label="<?= e($placeTitle[$place]) ?> ร่วม">
+                                <table class="top-tie-table">
+                                    <thead>
+                                        <tr>
+                                            <th>นักเรียน</th>
+                                            <th>ห้องเรียน</th>
+                                            <th>Rank</th>
+                                            <th>หยดสาร</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($entries as $entry): ?>
+                                            <?php
+                                            $student = $entry['student'];
+                                            $rank = $entry['rank'];
+                                            ?>
+                                            <tr>
+                                                <td>
+                                                    <span class="top-tie-student">
+                                                        <span class="top-tie-rank-icon">
+                                                            <?= \App\Support\View::partial('partials/rank-badge', ['rank' => $rank, 'size' => 'sm', 'showName' => false]) ?>
+                                                        </span>
+                                                        <strong><?= e($student->fullName) ?></strong>
+                                                    </span>
+                                                </td>
+                                                <td><?= e($student->className) ?></td>
+                                                <td><?= e($rank->thaiName) ?></td>
+                                                <td><strong><?= e((string) $student->drops) ?></strong> หยดสาร</td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    <?php endforeach; ?>
                 </section>
             <?php endif; ?>
         </div>
