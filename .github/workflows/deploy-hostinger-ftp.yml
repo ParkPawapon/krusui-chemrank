@@ -147,31 +147,28 @@ jobs:
           set cmd:fail-exit yes
           set xfer:clobber on
           mkdir -pf "$FTP_REMOTE_DIR"
+          put -O "$FTP_REMOTE_DIR" .env
+          put -O "$FTP_REMOTE_DIR" .htaccess
+          mirror -R $MIRROR_DELETE_FLAG --verbose app "$FTP_REMOTE_DIR/app"
+          mirror -R $MIRROR_DELETE_FLAG --verbose bootstrap "$FTP_REMOTE_DIR/bootstrap"
+          mirror -R $MIRROR_DELETE_FLAG --verbose config "$FTP_REMOTE_DIR/config"
+          mirror -R $MIRROR_DELETE_FLAG --verbose database "$FTP_REMOTE_DIR/database"
+          mirror -R $MIRROR_DELETE_FLAG --verbose domain "$FTP_REMOTE_DIR/domain"
+          mirror -R $MIRROR_DELETE_FLAG --verbose infrastructure "$FTP_REMOTE_DIR/infrastructure"
+          mirror -R $MIRROR_DELETE_FLAG --verbose public "$FTP_REMOTE_DIR/public"
           mirror -R $MIRROR_DELETE_FLAG --verbose \
-            --exclude-glob .git/** \
-            --exclude-glob .github/** \
-            --exclude-glob .dockerignore \
-            --exclude-glob .env.docker.example \
-            --exclude-glob .gitignore \
-            --exclude-glob node_modules/** \
-            --exclude-glob tests/** \
-            --exclude-glob storage/logs/** \
-            --exclude-glob storage/rate-limit/** \
-            --exclude-glob .env.example \
-            --exclude-glob .env.docker \
-            --exclude-glob compose.yml \
-            --exclude-glob docker-compose.yml \
-            --exclude-glob docker/** \
-            --exclude-glob Dockerfile \
-            --exclude-glob README.md \
-            --exclude-glob SECURITY.md \
-            --exclude-glob resources/** \
-            --exclude-glob '*.map' \
-            --exclude-glob '.DS_Store' \
-            --exclude-glob '.well-known/**' \
-            ./ "$FTP_REMOTE_DIR"
+            --exclude-glob logs/** \
+            --exclude-glob rate-limit/** \
+            storage "$FTP_REMOTE_DIR/storage"
           bye
           LFTP
+
+      - name: Verify production health
+        env:
+          APP_URL: ${{ inputs.app_url }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 30 "$APP_URL/" >/dev/null
 
       - name: Post-deploy reminder
         run: |
