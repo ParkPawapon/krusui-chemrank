@@ -3679,7 +3679,33 @@
   }
 
   .podium-featured.podium-count-2 {
-    @apply md:grid-cols-2;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .podium-featured {
+      grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.16fr) minmax(0, 0.92fr);
+    }
+
+    .podium-featured.podium-count-1 {
+      grid-template-columns: minmax(0, 540px);
+    }
+
+    .podium-featured .podium-card.place-2 {
+      grid-column: 1;
+    }
+
+    .podium-featured .podium-card.place-1 {
+      grid-column: 2;
+    }
+
+    .podium-featured .podium-card.place-3 {
+      grid-column: 3;
+    }
+
+    .podium-featured.podium-count-1 .podium-card {
+      grid-column: 1;
+    }
   }
 
   .podium-card {
