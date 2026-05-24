@@ -6,6 +6,9 @@
 /** @var string $profileVariant */
 /** @var string $formAction */
 /** @var string $buttonClass */
+$isTeacherProfile = $profileVariant === 'teacher';
+$eyebrow = $isTeacherProfile ? 'บัญชีครู' : $profileLabel;
+$heading = $isTeacherProfile ? $profileLabel : $user->name;
 ?>
 <section class="profile-page profile-page-<?= e($profileVariant) ?> page-band">
     <div class="profile-shell">
@@ -13,8 +16,8 @@
         <span class="profile-soft-drop profile-soft-drop-b" aria-hidden="true"></span>
 
         <div class="profile-copy">
-            <span class="profile-eyebrow"><?= e($profileLabel) ?></span>
-            <h1><?= e($user->name) ?></h1>
+            <span class="profile-eyebrow"><?= e($eyebrow) ?></span>
+            <h1><?= e($heading) ?></h1>
             <p><?= e($profileDescription) ?></p>
         </div>
 
