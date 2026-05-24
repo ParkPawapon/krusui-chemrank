@@ -16,6 +16,7 @@ use App\Services\CsrfTokenManager;
 use App\Services\LeaderboardService;
 use App\Services\StudentExcelImportService;
 use App\Services\StudentExcelTemplateService;
+use App\Services\StudentRosterExportService;
 use App\Services\StudentService;
 use App\Services\UserPasswordService;
 use App\Services\XlsxStudentImportReader;
@@ -125,6 +126,7 @@ $studentService = new StudentService($pdo, $students, $users, $transactions, $ac
 $userPasswordService = new UserPasswordService($users, $passwords, $activityLogs);
 $studentImportService = new StudentExcelImportService($studentService, new XlsxStudentImportReader());
 $studentTemplateService = new StudentExcelTemplateService();
+$studentRosterExportService = new StudentRosterExportService($ranks);
 $leaderboard = new LeaderboardService($students, $ranks);
 $authMiddleware = new AuthMiddleware($auth);
 
@@ -179,39 +181,44 @@ $router->post('/teacher/profile/password', function (Request $request) use ($aut
     ))->updatePassword($request);
 });
 
-$router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): string {
+$router->get('/teacher', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): string {
     $authMiddleware->requireRole(Role::TEACHER);
-    return (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->dashboard($request);
+    return (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->dashboard($request);
 });
 
-$router->post('/teacher/students', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->createStudent($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->createStudent($request);
 });
 
-$router->post('/teacher/students/import', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students/import', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->importStudents($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->importStudents($request);
 });
 
-$router->post('/teacher/students/import-preview', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/students/import-preview', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->previewImport($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->previewImport($request);
 });
 
-$router->get('/teacher/students/import-template', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->get('/teacher/students/import-template', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->downloadImportTemplate();
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->downloadImportTemplate();
 });
 
-$router->post('/teacher/drops', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->get('/teacher/students/export', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->adjustDrops($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->exportStudents($request);
 });
 
-$router->post('/teacher/students/delete', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf): never {
+$router->post('/teacher/drops', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
     $authMiddleware->requireRole(Role::TEACHER);
-    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $academicYears, $ranks, $csrf))->deleteStudent($request);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->adjustDrops($request);
+});
+
+$router->post('/teacher/students/delete', function (Request $request) use ($authMiddleware, $auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf): never {
+    $authMiddleware->requireRole(Role::TEACHER);
+    (new TeacherController($auth, $students, $studentService, $studentImportService, $studentTemplateService, $studentRosterExportService, $academicYears, $ranks, $csrf))->deleteStudent($request);
 });
 
 $router->get('/leaderboard', function (Request $request) use ($leaderboard, $students): string {
