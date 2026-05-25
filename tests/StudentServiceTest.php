@@ -71,7 +71,8 @@ assert_same(2, $count, 'Every drop adjustment should be logged');
 $activityLogCount = (int) $pdo->query('SELECT COUNT(*) FROM activity_logs')->fetchColumn();
 assert_same(4, $activityLogCount, 'Student creation and every drop adjustment should write activity logs');
 
-$service->resetStudentPassword($student->id, $teacher->id, '12345678');
+$resetStudent = $service->resetStudentPassword($student->id, $teacher->id, '12345678');
+assert_same($student->id, $resetStudent->id, 'Password reset should return the reset student');
 $resetStudentUser = $users->findByUsername('12345');
 assert_true($resetStudentUser !== null, 'Student user should exist after password reset');
 assert_true($passwords->verify('12345678', $resetStudentUser->passwordHash), 'Student password should reset to the configured default');

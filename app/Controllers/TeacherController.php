@@ -40,6 +40,8 @@ final class TeacherController
         $className = trim((string) $request->query('class', ''));
         $search = trim((string) $request->query('q', ''));
         $activeAcademicYear = $this->academicYears->activeOrCreateDefault();
+        $passwordResetNotice = $_SESSION['_student_password_reset_notice'] ?? null;
+        unset($_SESSION['_student_password_reset_notice']);
 
         return View::render('teacher/dashboard', [
             'title' => 'Teacher Dashboard',
@@ -54,6 +56,7 @@ final class TeacherController
             'search' => $search,
             'ranks' => $this->ranks,
             'csrf' => $this->csrf,
+            'passwordResetNotice' => is_array($passwordResetNotice) ? $passwordResetNotice : null,
         ]);
     }
 
@@ -235,12 +238,16 @@ final class TeacherController
         $user = $this->auth->currentUser();
 
         try {
-            $this->studentService->resetStudentPassword(
+            $student = $this->studentService->resetStudentPassword(
                 (int) $request->post('student_id', 0),
                 (int) ($user?->id ?? 0),
                 self::INITIAL_STUDENT_PASSWORD
             );
-            Flash::put('success', 'รีเซ็ตรหัสผ่านนักเรียนเรียบร้อย');
+            $_SESSION['_student_password_reset_notice'] = [
+                'student_name' => $student->fullName,
+                'student_number' => $student->studentNumber,
+                'password' => self::INITIAL_STUDENT_PASSWORD,
+            ];
         } catch (\InvalidArgumentException $exception) {
             Flash::put('error', $exception->getMessage());
         } catch (\Throwable) {

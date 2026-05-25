@@ -4,6 +4,7 @@ import { showLevelModal, showToast } from './ui.js';
 export function initTeacherDashboard() {
   initTeacherFilters();
   initImportPreview();
+  initPasswordResetModal();
   bindDropForms(document);
 }
 
@@ -272,6 +273,28 @@ function initImportPreview() {
       submitButton.disabled = true;
     }
   });
+}
+
+function initPasswordResetModal() {
+  const modal = document.querySelector('[data-password-reset-modal]');
+  if (!modal || modal.dataset.resetModalBound === 'true') return;
+  modal.dataset.resetModalBound = 'true';
+
+  const closeModal = () => {
+    if (typeof modal.close === 'function') {
+      modal.close();
+    } else {
+      modal.removeAttribute('open');
+    }
+  };
+
+  modal.querySelectorAll('[data-password-reset-close]').forEach((button) => {
+    button.addEventListener('click', closeModal);
+  });
+
+  if (modal.hasAttribute('data-password-reset-auto-open')) {
+    window.requestAnimationFrame(() => openModal(modal));
+  }
 }
 
 function openModal(modal) {
