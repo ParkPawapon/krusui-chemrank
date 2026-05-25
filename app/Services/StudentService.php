@@ -200,7 +200,7 @@ final class StudentService
         }
     }
 
-    public function resetStudentPassword(int $studentId, int $teacherId, string $password): void
+    public function resetStudentPassword(int $studentId, int $teacherId, string $password): Student
     {
         $password = trim($password);
 
@@ -232,6 +232,8 @@ final class StudentService
                 'user_id' => $student->userId,
             ]);
             $this->pdo->commit();
+
+            return $student;
         } catch (\Throwable $exception) {
             $this->pdo->rollBack();
             throw $exception;

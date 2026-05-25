@@ -7,6 +7,7 @@
 /** @var string $search */
 /** @var \Domain\Rank\RankRegistry $ranks */
 /** @var \App\Services\CsrfTokenManager $csrf */
+/** @var array<string,string>|null $passwordResetNotice */
 $exportParams = [];
 
 if ($search !== '') {
@@ -167,7 +168,7 @@ $exportUrl = url('/teacher/students/export') . ($exportParams !== [] ? '?' . htt
                             <th>Rank</th>
                             <th>หยดสาร</th>
                             <th>ปรับหยด</th>
-                            <th>จัดการ</th>
+                            <th class="teacher-actions-heading">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -186,6 +187,32 @@ $exportUrl = url('/teacher/students/export') . ($exportParams !== [] ? '?' . htt
             </div>
         </div>
     </section>
+
+    <?php if ($passwordResetNotice): ?>
+        <dialog class="teacher-reset-modal" data-password-reset-modal data-password-reset-auto-open aria-labelledby="password-reset-title">
+            <div class="teacher-reset-modal-panel">
+                <button class="modal-close teacher-reset-modal-close" type="button" data-password-reset-close aria-label="ปิด">×</button>
+                <span class="teacher-reset-aura teacher-reset-aura-mint" aria-hidden="true"></span>
+                <span class="teacher-reset-aura teacher-reset-aura-gold" aria-hidden="true"></span>
+                <div class="teacher-reset-icon" aria-hidden="true"></div>
+                <div class="teacher-reset-copy">
+                    <small>รีเซ็ตรหัสผ่านสำเร็จ</small>
+                    <h2 id="password-reset-title">ตั้งรหัสผ่านใหม่เรียบร้อย</h2>
+                    <p>
+                        <?= e((string) ($passwordResetNotice['student_name'] ?? 'นักเรียน')) ?>
+                        <?php if (!empty($passwordResetNotice['student_number'])): ?>
+                            <span>เลขประจำตัว <?= e((string) $passwordResetNotice['student_number']) ?></span>
+                        <?php endif; ?>
+                    </p>
+                </div>
+                <div class="teacher-reset-password-card" aria-label="รหัสผ่านใหม่">
+                    <span>รหัสผ่านใหม่</span>
+                    <strong><?= e((string) ($passwordResetNotice['password'] ?? '12345678')) ?></strong>
+                </div>
+                <button class="btn btn-primary teacher-reset-done" type="button" data-password-reset-close>รับทราบ</button>
+            </div>
+        </dialog>
+    <?php endif; ?>
 
     <dialog class="teacher-import-modal" data-import-modal aria-labelledby="import-modal-title">
         <div class="teacher-import-modal-panel">
