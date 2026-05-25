@@ -80,6 +80,13 @@ assert_true($passwords->verify('12345678', $resetStudentUser->passwordHash), 'St
 $passwordResetLogCount = (int) $pdo->query("SELECT COUNT(*) FROM activity_logs WHERE action = 'student.password_reset'")->fetchColumn();
 assert_same(1, $passwordResetLogCount, 'Student password reset should write an activity log');
 
+$users->create('บัญชีนักเรียนค้าง', Role::STUDENT, '54321', $passwords->hash('secure-password'));
+$service->deleteStudent($student->id, $teacher->id);
+assert_true($students->findById($student->id) === null, 'Deleted student should be removed from the roster');
+assert_true($users->findByUsername('12345') === null, 'Deleting a student should remove the linked student user account');
+assert_true($users->findByUsername('54321') === null, 'Deleting a student should clean orphaned student user accounts');
+assert_true($users->findByUsername('12346') !== null, 'Deleting one student must not remove active student accounts');
+
 try {
     $service->adjustDrops($student->id, $teacher->id, 0, 'add', null);
     throw new RuntimeException('Zero amount should fail validation');

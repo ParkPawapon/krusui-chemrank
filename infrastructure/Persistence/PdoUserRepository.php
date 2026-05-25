@@ -72,6 +72,30 @@ final class PdoUserRepository implements UserRepository
         }
     }
 
+    public function deleteOrphanedStudentAccounts(): int
+    {
+        if ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql') {
+            $statement = $this->pdo->prepare(
+                'DELETE u
+                 FROM users u
+                 LEFT JOIN students s ON s.user_id = u.id
+                 WHERE u.role = :role AND s.id IS NULL'
+            );
+        } else {
+            $statement = $this->pdo->prepare(
+                'DELETE FROM users
+                 WHERE role = :role
+                 AND id NOT IN (
+                     SELECT user_id FROM students WHERE user_id IS NOT NULL
+                 )'
+            );
+        }
+
+        $statement->execute(['role' => 'student']);
+
+        return $statement->rowCount();
+    }
+
     /**
      * @param array<string,mixed> $row
      */

@@ -186,6 +186,7 @@ final class StudentService
 
         try {
             $this->students->delete($studentId);
+            $this->users->deleteOrphanedStudentAccounts();
             $this->activityLogs->record($teacherId > 0 ? $teacherId : null, 'student.deleted', 'student', $studentId, [
                 'student_number' => $student->studentNumber,
                 'full_name' => $student->fullName,

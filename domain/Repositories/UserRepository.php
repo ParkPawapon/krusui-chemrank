@@ -17,4 +17,6 @@ interface UserRepository
     public function create(string $name, string $role, string $username, string $passwordHash): User;
 
     public function updatePasswordHash(int $userId, string $passwordHash): void;
+
+    public function deleteOrphanedStudentAccounts(): int;
 }
